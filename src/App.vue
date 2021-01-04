@@ -97,8 +97,8 @@
         <header
           class="flex justify-between items-center py-2 px-2 bg-gray-300 border-b-4 border-indigo-600"
         >
-          <!-- ハンバーガーアイコン -->
           <div class="flex items-center">
+            <!-- ハンバーガーアイコン -->
             <button
               @click="sidebarOpen = true"
               class="text-gray-500 focus:outline-none lg:hidden"
@@ -184,7 +184,6 @@
         <!-- main contains -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
           <div class="container mx-2">
-            <!-- <h3 class="text-gray-700 text-3xl font-medium">h3 Dashboard</h3> -->
             <p id="title">
               Built on top of modern-normalize, Preflight is a set of base
               styles for Tailwind projects that are designed to smooth over
@@ -207,8 +206,8 @@ export default {
   data() {
     return {
       sidebarOpen: false,
-      dropdownOpen: false,
+      dropdownOpen: false
     };
-  },
+  }
 };
 </script>
