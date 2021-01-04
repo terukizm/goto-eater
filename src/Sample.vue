@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <p> this is vue App.vue (sample) </p>
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
