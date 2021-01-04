@@ -180,6 +180,7 @@
               cross-browser inconsistencies and make it easier for you to work
               within the constraints of your design system.
             </p>
+            <p>{{ geolonia_url }}</p>
           </div>
         </main>
       </div>
@@ -204,6 +205,9 @@ export default {
   computed: {
     genres: () => {
       return constant.GENRES;
+    },
+    geolonia_url: () => {
+      return `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`;
     }
   }
 };

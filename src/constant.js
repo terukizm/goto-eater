@@ -1,4 +1,8 @@
 export default Object.freeze({
+  /** GEOLONIAのAPI_KEY */
+  GEOLONIA_API_KEY: process.env.VUE_APP_GEOLONIA_API_KEY,
+
+  /** ジャンル定義 */
   GENRES: {
     1: {
       name: "居酒屋・バー・バル",
