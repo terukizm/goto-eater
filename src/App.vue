@@ -26,41 +26,31 @@
         <!-- menuの中身 -->
         <nav class="mt-5">
           <!-- 全選択/全選択解除 -->
-          <div class="mx-auto flex flex-col p-2">
+          <div class="mx-auto flex flex-col h-12 p-2">
             <label class="inline-flex items-center ml-2">
               <input
                 type="checkbox"
                 class="form-checkbox h-6 w-6 text-gray-500"
                 checked
               />
-              <span class="text-gray-700 mx-3">全選択</span>
+              <span class="text-gray-300 mx-3">全選択</span>
             </label>
           </div>
 
           <!-- 最大10カテゴリ -->
-          <div v-for="i of 10" :key="i" class="flex flex-col p-2">
-            <label class="inline-flex items-center mt-2 ml-2">
-              <svg
-                class="h-8 w-8 mr-2 text-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                ></path>
-              </svg>
-
+          <div
+            v-for="genre of genres"
+            :key="genre.name"
+            class="flex flex-col p-2"
+          >
+            <label class="inline-flex items-center h-12">
               <input
                 type="checkbox"
-                class="form-checkbox h-6 w-6 text-gray-500"
+                :class="`form-checkbox h-6 w-6 ml-2 text-${genre.color}`"
                 checked
               />
-              <span class="text-gray-700 mx-3">ジャンル{{ i }}</span>
+              <img class="ml-2" :src="genre.icon" :alt="genre.name" />
+              <span :class="`text-${genre.color} mx-2`">{{ genre.name }}</span>
             </label>
           </div>
         </nav>
@@ -208,6 +198,62 @@ export default {
       sidebarOpen: false,
       dropdownOpen: false
     };
+  },
+  computed: {
+    genres: () => {
+      return {
+        1: {
+          name: "居酒屋・バー・バル",
+          color: "yellow-500",
+          icon: require("@/assets/img/marker/genre1.png")
+        },
+        2: {
+          name: "和食・寿司",
+          color: "green-500",
+          icon: require("@/assets/img/marker/genre2.png")
+        },
+        3: {
+          name: "洋食",
+          color: "blue-500",
+          icon: require("@/assets/img/marker/genre3.png")
+        },
+        4: {
+          name: "中華",
+          color: "red-500",
+          icon: require("@/assets/img/marker/genre4.png")
+        },
+        5: {
+          name: "麺類(ラーメン、そば、うどん)",
+          color: "yellow-300",
+          icon: require("@/assets/img/marker/genre5.png")
+        },
+        6: {
+          name: "カレー・各国料理・創作料理",
+          color: "purple-400",
+          icon: require("@/assets/img/marker/genre6.png")
+        },
+        7: {
+          name: "ステーキ・鉄板焼き・焼肉",
+          color: "yellow-600",
+          icon: require("@/assets/img/marker/genre7.png")
+        },
+        8: {
+          name: "ファーストフード・ファミレス・食堂",
+          color: "blue-300",
+          icon: require("@/assets/img/marker/genre8.png")
+        },
+        9: {
+          name: "カフェ・スイーツ",
+          color: "pink-400",
+          icon: require("@/assets/img/marker/genre9.png")
+        },
+        10: {
+          name: "その他",
+          color: "gray-400",
+          icon: require("@/assets/img/marker/genre10.png")
+        }
+      };
+    }
   }
 };
 </script>
