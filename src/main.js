@@ -5,6 +5,9 @@ import router from "./router";
 
 import "./tailwindcss.css";
 
+import LoadScript from "vue-plugin-load-script";
+Vue.use(LoadScript);
+
 Vue.config.productionTip = false;
 
 new Vue({

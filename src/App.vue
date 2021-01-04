@@ -180,8 +180,8 @@
               cross-browser inconsistencies and make it easier for you to work
               within the constraints of your design system.
             </p>
-            <p>{{ geolonia_url }}</p>
           </div>
+          <div id="map" class="w-full h-full"></div>
         </main>
       </div>
     </div>
@@ -193,11 +193,14 @@
 </style>
 
 <script>
-import constant from './constant';
+import constant from "./constant";
 
 export default {
   data() {
     return {
+      // lat: 35.6762,
+      // lng: 139.6503,
+      // zoom: 10,
       sidebarOpen: false,
       dropdownOpen: false
     };
@@ -205,9 +208,69 @@ export default {
   computed: {
     genres: () => {
       return constant.GENRES;
-    },
-    geolonia_url: () => {
-      return `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`;
+    }
+  },
+  created() {
+    // @see https://github.com/tserkov/vue-plugin-load-script#readme
+    this.$loadScript(
+      `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
+    )
+      .then(() => {
+        console.log("geolonia script is loaded !!");
+        this.initMap();
+      })
+      .catch(e => {
+        // Failed to fetch script
+        console.log("error.....");
+        console.log(e);
+      });
+  },
+  methods: {
+    initMap() {
+      const lat = "35.69483751107386";
+      const lng = "139.84308645129204";
+      const zoom = "15";
+
+      // Script is loaded, do something
+      console.log("new geolonia Map.......");
+
+      /* eslint-disable */
+      // 外部jsをvue-plugin-load-scriptで読み込むが、eslintがerrorにしてくるので黙らせている
+      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
+      const map = new geolonia.Map({
+        container: "#map",
+        center: [lng, lat],
+        zoom: zoom
+      })
+        .addControl(
+          new geolonia.ScaleControl({
+            maxWidth: 200,
+            unit: "metric"
+          })
+        )
+        .addControl(
+          new geolonia.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            fitBoundsOptions: {
+              linear: true,
+              zoom: zoom
+            },
+            trackUserLocation: false,
+            showUserLocation: true
+          })
+        );
+      /* eslint-enable */
+
+      // マーカー用アイコン画像読み込み
+      for (const [key, value] of Object.entries(constant.GENRES)) {
+        map.loadImage(value.icon, (error, res) => {
+          map.addImage(`marker-genre${key}`, res);
+        });
+      }
+
+      this.map = map;
     }
   }
 };
