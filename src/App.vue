@@ -141,7 +141,7 @@
                 @click="dropdownOpen = !dropdownOpen"
                 class="relative block focus:outline-none leading-tight font-semibold text-gray-900"
               >
-                和歌山県
+                {{ pref_name_ja || "Unknown" }}
               </button>
 
               <div
@@ -195,9 +195,18 @@
 <script>
 import constant from "./constant";
 
+const getCurrentPosition = options => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+};
+
 export default {
   data: function() {
     return {
+      lat: null,
+      lng: null,
+      pref_name_ja: null,
       zoom: "15",
       sidebarOpen: false,
       dropdownOpen: false
@@ -209,13 +218,31 @@ export default {
     }
   },
   created: function() {
-    /** (WIP): ブラウザから現在地を取得する的なメソッド */
-    const loadLatLng = new Promise(resolve => {
-      console.log("get lat, lng complete");
-      this.lat = "35.69483751107386";
-      this.lng = "139.84308645129204";
-      return resolve();
-    });
+    /** 現在地を取得 */
+    const loadByCurrentPosition = async function() {
+      try {
+        console.log("loadByCurrent...");
+        const position = await getCurrentPosition();
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const response = await fetch(
+          // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
+          `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
+        );
+        const json = await response.json();
+        const pref_name_ja = json.result.prefecture.pname;
+        console.log(`current positon: ${pref_name_ja} ${lat}, ${lng}`);
+
+        // this.lat = lat;
+        // this.lng = lng;
+        // this.pref_name_ja = pref_name_ja;
+
+        return Promise.resolve();
+      } catch (e) {
+        console.log(e);
+        return Promise.reject(e);
+      }
+    };
 
     // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
     const loadGeoloniaJS = this.$loadScript(
@@ -233,8 +260,7 @@ export default {
     // 下記3点が全部完了したら(Promise.all)地図描画を開始
     Promise.all([
       loadGeoloniaJS, // 外部js読み込み
-      loadLatLng // 地図の中心地(latlng)取得
-      // TODO: 対象pref_name取得
+      loadByCurrentPosition() // 現在地から取得
     ])
       .then(() => {
         console.log("init map...");
@@ -245,6 +271,7 @@ export default {
         console.log(e);
       });
   },
+
   methods: {
     /** map描画 */
     initMap(lat, lng, zoom) {
