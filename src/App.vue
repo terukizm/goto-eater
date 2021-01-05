@@ -141,7 +141,7 @@
                 @click="dropdownOpen = !dropdownOpen"
                 class="relative block focus:outline-none leading-tight font-semibold text-gray-900"
               >
-                {{ pref_name_ja || "Unknown" }}
+                {{ prefNameJa || "[Unknown]" }}
               </button>
 
               <div
@@ -181,20 +181,24 @@
               within the constraints of your design system.
             </p>
           </div>
-          <div id="map" class="w-full h-screen"></div>
+          <!-- <GeoloniaMap
+            :lat="36.304365"
+            :lng="139.5962079"
+            :pref-name-ja="'栃木県'"
+            :zoom="zoom"
+          /> -->
+          <GeoloniaMap ref="webmap" />
         </main>
       </div>
     </div>
   </div>
 </template>
 
-<style>
-/* pass */
-</style>
-
 <script>
 import constant from "./constant";
+import GeoloniaMap from "@/components/GeoloniaMap.vue";
 
+/** 現在地を取得 */
 const getCurrentPosition = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
@@ -202,12 +206,12 @@ const getCurrentPosition = options => {
 };
 
 export default {
+  components: {
+    GeoloniaMap
+  },
   data: function() {
     return {
-      lat: null,
-      lng: null,
-      pref_name_ja: null,
-      zoom: "15",
+      prefNameJa: null,
       sidebarOpen: false,
       dropdownOpen: false
     };
@@ -218,110 +222,31 @@ export default {
     }
   },
   created: function() {
-    /** 現在地を取得 */
-    const loadByCurrentPosition = async function() {
-      try {
-        console.log("loadByCurrent...");
-        const position = await getCurrentPosition();
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        const response = await fetch(
-          // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
-          `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
-        );
-        const json = await response.json();
-        const pref_name_ja = json.result.prefecture.pname;
-        console.log(`current positon: ${pref_name_ja} ${lat}, ${lng}`);
+    (async () => {
+      const position = await getCurrentPosition();
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const zoom = 15;
 
-        // this.lat = lat;
-        // this.lng = lng;
-        // this.pref_name_ja = pref_name_ja;
+      // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
+      const response = await fetch(
+        `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
+      );
+      const json = await response.json();
+      const prefNameJa = json.result.prefecture.pname;
+      console.log(`current positon: ${prefNameJa} ${lat}, ${lng}`);
 
-        return Promise.resolve();
-      } catch (e) {
-        console.log(e);
-        return Promise.reject(e);
-      }
-    };
-
-    // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
-    const loadGeoloniaJS = this.$loadScript(
-      `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
-    )
-      .then(() => {
-        console.log("geolonia script is loaded !!");
-      })
-      .catch(e => {
-        // Failed to fetch script
-        console.log("[failed] geolonia js load error.....");
-        console.log(e);
-      });
-
-    // 下記3点が全部完了したら(Promise.all)地図描画を開始
-    Promise.all([
-      loadGeoloniaJS, // 外部js読み込み
-      loadByCurrentPosition() // 現在地から取得
-    ])
-      .then(() => {
-        console.log("init map...");
-        // this.initMap(this.lat, this.lng, this.zoom);
+      this.prefNameJa = prefNameJa;
+      return [parseFloat(lat), parseFloat(lng), prefNameJa, zoom];
+    })()
+      .then(res => {
+        console.log("Sucesss loadByCurrentPosition...");
+        this.$refs.webmap.init(...res);
       })
       .catch(e => {
         console.log("[failed] init map error.....");
         console.log(e);
       });
-  },
-
-  methods: {
-    /** map描画 */
-    initMap(lat, lng, zoom) {
-      // Script is loaded, do something
-      console.log("new geolonia Map.......");
-
-      // geoloniaの外部jsが明示的にimportしたものではないため、
-      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
-      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
-
-      /* eslint-disable */
-      const map = new geolonia.Map({
-        container: "#map",
-        center: [lng, lat],
-        zoom: zoom
-      })
-        .addControl(
-          new geolonia.ScaleControl({
-            maxWidth: 200,
-            unit: "metric"
-          })
-        )
-        .addControl(
-          new geolonia.GeolocateControl({
-            positionOptions: {
-              enableHighAccuracy: true
-            },
-            fitBoundsOptions: {
-              linear: true,
-              zoom: zoom
-            },
-            trackUserLocation: false,
-            showUserLocation: true
-          })
-        );
-      /* eslint-enable */
-
-      // マーカー用アイコン画像読み込み
-      for (const [key, value] of Object.entries(constant.GENRES)) {
-        map.loadImage(value.icon, (error, res) => {
-          map.addImage(`marker-genre${key}`, res);
-        });
-      }
-
-      // MEMO: 標準の"geolonia/basic"だと Expected value to be of type number, but found null instead.が
-      // 頻繁に出るので暫定的にモノクロのgeolonia/notebookスタイルを当てる
-      map.setStyle("geolonia/notebook");
-
-      this.map = map;
-    }
   }
 };
 </script>
