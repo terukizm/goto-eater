@@ -181,7 +181,7 @@
               within the constraints of your design system.
             </p>
           </div>
-          <div id="map" class="w-full h-full"></div>
+          <div id="map" class="w-full h-screen"></div>
         </main>
       </div>
     </div>
@@ -196,47 +196,66 @@
 import constant from "./constant";
 
 export default {
-  data() {
+  data: function() {
     return {
-      // lat: 35.6762,
-      // lng: 139.6503,
-      // zoom: 10,
+      zoom: "15",
       sidebarOpen: false,
       dropdownOpen: false
     };
   },
   computed: {
-    genres: () => {
+    genres: function() {
       return constant.GENRES;
     }
   },
-  created() {
-    // @see https://github.com/tserkov/vue-plugin-load-script#readme
-    this.$loadScript(
+  created: function() {
+    /** (WIP): ブラウザから現在地を取得する的なメソッド */
+    const loadLatLng = new Promise(resolve => {
+      console.log("get lat, lng complete");
+      this.lat = "35.69483751107386";
+      this.lng = "139.84308645129204";
+      return resolve();
+    });
+
+    // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
+    const loadGeoloniaJS = this.$loadScript(
       `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
     )
       .then(() => {
         console.log("geolonia script is loaded !!");
-        this.initMap();
       })
       .catch(e => {
         // Failed to fetch script
-        console.log("error.....");
+        console.log("[failed] geolonia js load error.....");
+        console.log(e);
+      });
+
+    // 下記3点が全部完了したら(Promise.all)地図描画を開始
+    Promise.all([
+      loadGeoloniaJS, // 外部js読み込み
+      loadLatLng // 地図の中心地(latlng)取得
+      // TODO: 対象pref_name取得
+    ])
+      .then(() => {
+        console.log("init map...");
+        // this.initMap(this.lat, this.lng, this.zoom);
+      })
+      .catch(e => {
+        console.log("[failed] init map error.....");
         console.log(e);
       });
   },
   methods: {
-    initMap() {
-      const lat = "35.69483751107386";
-      const lng = "139.84308645129204";
-      const zoom = "15";
-
+    /** map描画 */
+    initMap(lat, lng, zoom) {
       // Script is loaded, do something
       console.log("new geolonia Map.......");
 
-      /* eslint-disable */
-      // 外部jsをvue-plugin-load-scriptで読み込むが、eslintがerrorにしてくるので黙らせている
+      // geoloniaの外部jsが明示的にimportしたものではないため、
+      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
       // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
+
+      /* eslint-disable */
       const map = new geolonia.Map({
         container: "#map",
         center: [lng, lat],
@@ -269,6 +288,10 @@ export default {
           map.addImage(`marker-genre${key}`, res);
         });
       }
+
+      // MEMO: 標準の"geolonia/basic"だと Expected value to be of type number, but found null instead.が
+      // 頻繁に出るので暫定的にモノクロのgeolonia/notebookスタイルを当てる
+      map.setStyle("geolonia/notebook");
 
       this.map = map;
     }
