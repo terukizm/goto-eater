@@ -2,6 +2,9 @@ export default Object.freeze({
   /** GEOLONIAのAPI_KEY */
   GEOLONIA_API_KEY: process.env.VUE_APP_GEOLONIA_API_KEY,
 
+  /** GeoJSONのBase Path */
+  GEOJSON_BASE: process.env.VUE_APP_GEOJSON_BASE,
+
   /** ジャンル定義 */
   GENRES: {
     1: {
