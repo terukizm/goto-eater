@@ -1,86 +1,9 @@
 <template>
   <div id="app">
     <!-- @see https://github.com/tailwindcomponents/dashboard -->
-    <!-- 左袖メニュー (ハンバーガーメニュー) -->
     <div class="flex h-screen bg-gray-200">
-      <div
-        :class="sidebarOpen ? 'block' : 'hidden'"
-        @click="sidebarOpen = false"
-        class="fixed z-20 inset-0 bg-black opacity-50 transition-opacity lg:hidden"
-      ></div>
-
-      <div
-        :class="
-          sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
-        "
-        class="fixed z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
-      >
-        <!-- LOGO -->
-        <div class="flex items-center justify-center my-4">
-          <a href="#">
-            <span class="text-white text-2xl font-semibold">後藤イー太</span
-            ><span class="text-white text-sm">(GoToEatMap)</span>
-          </a>
-        </div>
-
-        <!-- menuの中身 -->
-        <nav class="mt-5">
-          <!-- 全選択/全選択解除 -->
-          <div class="mx-auto flex flex-col h-12 p-2">
-            <label class="inline-flex items-center ml-2">
-              <input
-                type="checkbox"
-                class="form-checkbox h-6 w-6 text-gray-500"
-                checked
-              />
-              <span class="text-gray-300 mx-3">全選択</span>
-            </label>
-          </div>
-
-          <!-- 最大10カテゴリ -->
-          <div
-            v-for="genre of genres"
-            :key="genre.name"
-            class="flex flex-col p-2"
-          >
-            <label class="inline-flex items-center h-12">
-              <input
-                type="checkbox"
-                :class="`form-checkbox h-6 w-6 ml-2 text-${genre.color}`"
-                checked
-              />
-              <img class="ml-2" :src="genre.icon" :alt="genre.name" />
-              <span :class="`text-${genre.color} mx-2`">{{ genre.name }}</span>
-            </label>
-          </div>
-        </nav>
-
-        <!-- その他適当なリンク -->
-        <div class="flex items-center mx-4 mt-12">
-          <ul>
-            <li>
-              <a href="#" target="_blank">
-                <span class="text-white text-sm">(注釈)</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://geolonia.com/" target="_blank">
-                <span class="text-white text-sm">Powerd by geolonia</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://github.com/terukizm/goto-eater-data/"
-                target="_blank"
-              >
-                <span class="text-white text-sm"
-                  >GitHub Repository(goto-eater-data)</span
-                >
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <!-- 左袖メニュー (ハンバーガーメニュー) -->
+      <DrawerMenu ref="menu" />
 
       <!-- 上部メニュー -->
       <div class="flex-1 flex flex-col overflow-hidden">
@@ -90,7 +13,7 @@
           <div class="flex items-center">
             <!-- ハンバーガーアイコン -->
             <button
-              @click="sidebarOpen = true"
+              @click="openMenu"
               class="text-gray-500 focus:outline-none lg:hidden"
             >
               <svg
@@ -171,23 +94,24 @@
           </div>
         </header>
 
-        <!-- main contains -->
+        <!-- main contains(WebMap) -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
           <div class="container mx-2">
+            <!-- FIXME: 横幅が確保できなくて崩れるので入れてる -->
             <p id="title">
               Built on top of modern-normalize, Preflight is a set of base
               styles for Tailwind projects that are designed to smooth over
               cross-browser inconsistencies and make it easier for you to work
               within the constraints of your design system.
             </p>
+            <!-- <GeoloniaMap
+              :lat="36.304365"
+              :lng="139.5962079"
+              :pref-name-ja="'栃木県'"
+              :zoom="zoom"
+            /> -->
+            <GeoloniaMap ref="webmap" />
           </div>
-          <!-- <GeoloniaMap
-            :lat="36.304365"
-            :lng="139.5962079"
-            :pref-name-ja="'栃木県'"
-            :zoom="zoom"
-          /> -->
-          <GeoloniaMap ref="webmap" />
         </main>
       </div>
     </div>
@@ -197,6 +121,7 @@
 <script>
 import constant from "./constant";
 import GeoloniaMap from "@/components/GeoloniaMap.vue";
+import DrawerMenu from "@/components/DrawerMenu.vue";
 
 /** 現在地を取得 */
 const getCurrentPosition = options => {
@@ -207,12 +132,12 @@ const getCurrentPosition = options => {
 
 export default {
   components: {
-    GeoloniaMap
+    GeoloniaMap,
+    DrawerMenu
   },
   data: function() {
     return {
       prefNameJa: null,
-      sidebarOpen: false,
       dropdownOpen: false
     };
   },
@@ -247,6 +172,11 @@ export default {
         console.log("[failed] init map error.....");
         console.log(e);
       });
+  },
+  methods: {
+    openMenu() {
+      this.$refs.menu.sidebarOpen = true;
+    }
   }
 };
 </script>
