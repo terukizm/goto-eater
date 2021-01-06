@@ -1,4 +1,4 @@
-goto-eater
+(WIP) goto-eater
 ===
 
 (WIP) GoToEat食事券が使える店舗を表示するやつ。
@@ -8,6 +8,7 @@ goto-eater
 # 特徴
 
 * (ほぼ)全国対応
+  * [データ元](https://github.com/terukizm/goto-eater-data)
 * ジャンル別の表示
 * WebGLによるスムーズな地図表示(Mapbox GL JS互換)
 
@@ -59,6 +60,8 @@ $ npm run serve
 - [ ] 左袖メニューとの連携
   - [ ] チェックボックスの状態でレイヤーの出し分け
 - [ ] マーカークリック時のPopup処理
+- [ ] github pagesで公開
+- [ ] VueCLIでscafoldされたサンプルファイル郡を消す
 
 ## Project setup
 ```
