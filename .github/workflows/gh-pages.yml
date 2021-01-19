@@ -1,0 +1,33 @@
+name: publish github-pages
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 'v12.16.1'
+
+      - name: Install and Builddependencies
+        run: |
+          cat .env.production.example | sed -e 's/__REPLACE_HERE__/${{ secrets.GEOLONIA_API_KEY }}/g' > .env.production
+          npm ci
+          npm run build:prod
+
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
