@@ -14,8 +14,8 @@
     >
       <div class="flex items-center justify-center my-4">
         <!-- LOGO -->
-        <a href="#">
-          <span class="text-white text-2xl font-semibold">後藤イー太</span
+        <a href="https://github.com/terukizm/goto-eater">
+          <span class="text-white text-2xl font-semibold">後藤イー太(WIP)</span
           ><span class="text-white text-sm">(GoToEatMap)</span>
         </a>
       </div>
