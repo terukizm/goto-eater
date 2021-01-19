@@ -46,6 +46,9 @@
               checked
             />
             <img class="ml-2" :src="genre.icon" :alt="genre.name" />
+            <!-- FIXME: 動的にtext-color(例: "text-yellow-300")を組み立てると、PurgeCSSでは該当クラスを利用しているのがわからずに
+            Purgeされてしまう。とりあえずtailwind.config.jsで暫定対応。
+            -->
             <span :class="`text-${genre.color} mx-2`">{{ genre.name }}</span>
           </label>
         </div>
