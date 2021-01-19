@@ -27,7 +27,7 @@
 
 * install npm
 * [geolonia API_KEY](https://app.geolonia.com/?lang=ja#/signup)の払い出し
-  * http://localhost:8081/ など、開発用のURLを指定しておく
+  * http://localhost:8080/ など、開発用のURLを指定しておく
 
 ```
 $ git clone git@github.com:terukizm/goto-eater.git
@@ -41,7 +41,7 @@ VUE_APP_GEOLONIA_API_KEY='xxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 $ npm install
 $ npm run serve
--> http://localhost:8081/
+-> http://localhost:8080/
 ```
 
 # 開発メモ
@@ -60,7 +60,8 @@ $ npm run serve
 - [ ] 左袖メニューとの連携
   - [ ] チェックボックスの状態でレイヤーの出し分け
 - [ ] マーカークリック時のPopup処理
-- [ ] github pagesで公開
+- [x] github pagesで公開
+  - [x] https://terukizm.github.io/goto-eater/
 - [ ] VueCLIでscafoldされたサンプルファイル郡を消す
 
 ## Project setup
