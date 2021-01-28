@@ -22,7 +22,7 @@
 
       <nav class="mt-5">
         <!-- 全選択/全選択解除 -->
-        <div class="mx-auto flex flex-col h-12 p-2">
+        <!-- <div class="mx-auto flex flex-col h-12 p-2">
           <label class="inline-flex items-center ml-2">
             <input
               type="checkbox"
@@ -31,10 +31,10 @@
             />
             <span class="text-gray-300 mx-3">全選択</span>
           </label>
-        </div>
+        </div> -->
 
         <div
-          v-for="genre of genres"
+          v-for="(genre, i) in genres"
           :key="genre.name"
           class="flex flex-col p-2"
         >
@@ -43,6 +43,7 @@
             <input
               type="checkbox"
               :class="`form-checkbox h-6 w-6 ml-2 text-${genre.color}`"
+              v-model="layers[i]"
               checked
             />
             <img class="ml-2" :src="genre.icon" :alt="genre.name" />
@@ -98,6 +99,14 @@ export default {
   computed: {
     genres: function() {
       return constant.GENRES;
+    },
+    layers: {
+      get() {
+        return this.$store.getters.layers
+      },
+      set(value) {
+        this.$store.dispatch("setLayers", value);
+      }
     }
   }
 };

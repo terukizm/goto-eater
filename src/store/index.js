@@ -1,19 +1,25 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    layers: [null, true, true, true, true, true, true, true, true, true, true]
+  },
+  getters: {
+    layers: state => state.layers
   },
   mutations: {
-    increment(state) {
-      state.count++
+    updateLayers(state, value) {
+      state.layers = value;
+    },
+  },
+  actions: {
+    setLayers({commit}, value) {
+      commit("updateLayers", value)
     }
   }
 })
-
-store.commit('increment')
 
 export default store

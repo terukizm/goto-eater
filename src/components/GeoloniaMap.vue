@@ -72,9 +72,35 @@ export default {
         console.log("Failed to fetch geolonia js script...");
         console.log(e);
       });
+
+    this.$store.watch(
+      (_, getters) => getters.layers,
+      () => {
+        this.showLayer();
+      }
+    );
+  },
+
+  computed: {
+    layers: {
+      get() {
+        return this.$store.getters.layers;
+      },
+    },
   },
 
   methods: {
+    /** ジャンルの選択状態に応じてレイヤーを表示 */
+    showLayer() {
+      this.layers.forEach((value, i) => {
+        if (i === 0) {
+          return;
+        }
+        const layer_id = `layer-${i}`;
+        const visible = value ? "visible" : "none";
+        this.map.setLayoutProperty(layer_id, "visibility", visible);
+      });
+    },
     /** マーカーをクリックした場合のポップアップ作成 */
     createPopup(e) {
       console.log(e);
@@ -169,7 +195,7 @@ export default {
               source: datasource_id,
               type: "symbol",
               layout: {
-                visibility: "visible",
+                visibility: "none",
                 // マーカー画像(アイコン画像)の設定
                 "icon-image": icon_image,
                 "icon-allow-overlap": true,
@@ -202,9 +228,10 @@ export default {
               // マーカーへのマウスフォーカスが外れたらポインタを通常に戻す
               this.map.getCanvas().style.cursor = "";
             });
-
-            // - [ ] 左袖メニューのチェックボックスの選択状態と連動して、レイヤーの表示/非表示
           }
+
+          // 左袖メニューのチェックボックスの選択状態と連動して、レイヤーの表示/非表示
+          this.showLayer();
         })
         .catch((e) => {
           console.log("[failed] load map error.....");
