@@ -100,7 +100,7 @@ export default {
       this.lat = lat;
       this.lng = lng;
       this.prefNameJa = prefNameJa;
-      this.pref = "tochigi"; // TODO: const prefix = PREFS[pref_name_ja].en; // jp => en (例: "栃木県" => "tochigi")
+      this.pref = constant.PREFS[prefNameJa].en;
       this.zoom = zoom;
 
       /* eslint-disable */
