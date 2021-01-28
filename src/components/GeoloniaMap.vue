@@ -83,10 +83,6 @@ export default {
         );
       /* eslint-enable */
 
-      // MEMO: 標準の"geolonia/basic"だと Expected value to be of type number, but found null instead.が
-      // 頻繁に出るので、暫定的にモノクロのgeolonia/notebookスタイルを当てている
-      this.map.setStyle("geolonia/notebook");
-
       // その他の初期化
       (async () => {
         // mapの読み込み完了を待機
@@ -107,8 +103,6 @@ export default {
           // ジャンルごとにマーカー(アイコン)を描画したレイヤーを追加
           // 1レイヤーに1アイコン、1データソースが紐づく
           for (const [key, value] of Object.entries(constant.GENRES)) {
-            console.log(value);
-
             const layer_id = `layer-${key}`;
             const icon_image = `image-${key}`;
             const datasource_id = `datasource-${key}`;
@@ -142,8 +136,7 @@ export default {
               },
               paint: {
                 // shop_nameを表示している、ラベルテキスト関係の設定
-                // "text-color": `${value.color}`, // ラベルテキストの文字色   -> TODO: tailwindcssの形式(class名)だと当然ダメなので、別に持つ必要がある
-                "text-color": `rgba(0,0,0,1)`, // ラベルテキストの文字色
+                "text-color": `${value.color_rgba}`, // ラベルテキストの文字色
                 "text-halo-color": "rgba(255,255,255,1)", // 縁取りの色
                 "text-halo-width": 2
               }
