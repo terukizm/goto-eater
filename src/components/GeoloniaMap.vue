@@ -7,15 +7,15 @@
 <script>
 import constant from "../constant";
 
-// MEMO: map.on('load')相当
+// MEMO: map.on('load')をPromise対応させたもの
 // @see https://github.com/mapbox/mapbox-gl-js/issues/10192
-const mapOnLoadAsPromise = m => {
-  return new Promise(resolve => {
+const mapOnLoadAsPromise = (m) => {
+  return new Promise((resolve) => {
     m.on("load", () => resolve());
   });
 };
 
-// MEMO: map.loadImage()相当
+// MEMO: map.loadImage()をPromise対応させたもの
 // @see https://qiita.com/amay077/items/e85249ffe898f3d48cef
 const loadImageAsPromise = (map, url) => {
   return new Promise((resolve, reject) => {
@@ -23,6 +23,38 @@ const loadImageAsPromise = (map, url) => {
       return image === null ? reject(error) : resolve(image);
     });
   });
+};
+
+/**
+ * ポップアップの中身(HTML)を作成
+ * @param {*} feature
+ */
+const createPopupHTML = (feature) => {
+  const props = feature.properties;
+
+  // TODO: component化、HTML組み立て
+  let popup_html = `<strong>店舗名:</strong> ${props.shop_name}<br>`;
+  popup_html += `<strong>公式サイトの住所:</strong> ${props.address} <br>`;
+  popup_html += props.detail_page
+    ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>`
+    : "";
+  popup_html += props.area_name
+    ? `<strong>エリア</strong>: ${props.area_name} <br>`
+    : "";
+  popup_html += `<strong>ジャンル:</strong> ${props.genre_name} <br>`;
+  popup_html += props.closing_day
+    ? `<strong>定休日:</strong> ${props.closing_day} <br>`
+    : "";
+  popup_html += props.opening_hours
+    ? `<strong>営業時間:</strong> ${props.opening_hours} <br>`
+    : "";
+  popup_html += props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : "";
+  popup_html += props.offical_page
+    ? `<a href="${props.offical_page}" target="_blank">[公式HP]</a><br>`
+    : "";
+  popup_html += `<a href="${props["google_map_url"]}" target="_blank">【link to GoogleMap】</a><br>`;
+
+  return popup_html;
 };
 
 export default {
@@ -36,13 +68,31 @@ export default {
       .then(() => {
         console.log("geolonia script is loaded !!");
       })
-      .catch(e => {
+      .catch((e) => {
         console.log("Failed to fetch geolonia js script...");
         console.log(e);
       });
   },
 
   methods: {
+    /** マーカーをクリックした場合のポップアップ作成 */
+    createPopup(e) {
+      console.log(e);
+      const coordinates = e.lngLat;
+      const feature = e.features[0];
+      while (Math.abs(coordinates.lng - coordinates[0]) > 180) {
+        coordinates[0] += coordinates.lng > coordinates[0] ? 360 : -360;
+      }
+      // geoloniaの外部jsが明示的にimportしたものではないため、
+      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
+      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
+      /* eslint-disable */
+      new geolonia.Popup()
+        .setLngLat(coordinates)
+        .setHTML(createPopupHTML(feature))
+        .addTo(this.map);
+      /* eslint-enable */
+    },
     /** map描画 */
     init(lat, lng, prefNameJa, zoom = 15) {
       console.log("init geolonia Map.......");
@@ -53,32 +103,29 @@ export default {
       this.pref = "tochigi"; // TODO: const prefix = PREFS[pref_name_ja].en; // jp => en (例: "栃木県" => "tochigi")
       this.zoom = zoom;
 
-      // geoloniaの外部jsが明示的にimportしたものではないため、
-      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
-      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
-
       /* eslint-disable */
       this.map = new geolonia.Map({
         container: "#map",
         center: [lng, lat],
-        zoom: zoom
-      }).addControl(
+        zoom: zoom,
+      })
+        .addControl(
           new geolonia.ScaleControl({
             maxWidth: 200,
-            unit: "metric"
+            unit: "metric",
           })
         )
         .addControl(
           new geolonia.GeolocateControl({
             positionOptions: {
-              enableHighAccuracy: true
+              enableHighAccuracy: true,
             },
             fitBoundsOptions: {
               linear: true,
-              zoom: zoom
+              zoom: zoom,
             },
             trackUserLocation: false,
-            showUserLocation: true
+            showUserLocation: true,
           })
         );
       /* eslint-enable */
@@ -90,19 +137,19 @@ export default {
 
         // マーカー画像の読み込み完了を待機
         const images = await Promise.all(
-          Object.values(constant.GENRES).map(value => {
+          Object.values(constant.GENRES).map((value) => {
             return loadImageAsPromise(this.map, value.icon);
           })
         );
 
         return images;
       })()
-        .then(images => {
+        .then((images) => {
           console.log("Sucesss wait on load !!");
 
           // ジャンルごとにマーカー(アイコン)を描画したレイヤーを追加
-          // 1レイヤーに1アイコン、1データソースが紐づく
           for (const [key, value] of Object.entries(constant.GENRES)) {
+            // 1レイヤーに1アイコン、1データソースが紐づく
             const layer_id = `layer-${key}`;
             const icon_image = `image-${key}`;
             const datasource_id = `datasource-${key}`;
@@ -113,7 +160,7 @@ export default {
             // GeoJSONのURLをデータソースとして追加
             this.map.addSource(datasource_id, {
               type: "geojson",
-              data: `${constant.GEOJSON_BASE}/${this.pref}/genre${key}.geojson`
+              data: `${constant.GEOJSON_BASE}/${this.pref}/genre${key}.geojson`,
             });
 
             // レイヤー設定
@@ -123,7 +170,7 @@ export default {
               type: "symbol",
               layout: {
                 visibility: "visible",
-                // アイコン画像(Marker画像)の設定
+                // マーカー画像(アイコン画像)の設定
                 "icon-image": icon_image,
                 "icon-allow-overlap": true,
                 "icon-size": 1,
@@ -132,26 +179,38 @@ export default {
                 "text-font": ["Noto Sans Regular"],
                 "text-radial-offset": 1.8,
                 "text-size": 12,
-                "text-variable-anchor": ["top", "bottom", "left", "right"]
+                "text-variable-anchor": ["top", "bottom", "left", "right"],
               },
               paint: {
                 // shop_nameを表示している、ラベルテキスト関係の設定
                 "text-color": `${value.color_rgba}`, // ラベルテキストの文字色
                 "text-halo-color": "rgba(255,255,255,1)", // 縁取りの色
-                "text-halo-width": 2
-              }
+                "text-halo-width": 2,
+              },
             });
 
-            // TODO:
-            // - [ ] マーカークリックで吹き出し表示(レイヤーにクリックイベントを紐付ける))
+            // @see https://docs.mapbox.com/jp/mapbox-gl-js/example/popup-on-click/
+            this.map.on("click", layer_id, (e) => {
+              // マーカークリックで吹き出し表示(レイヤーにクリックイベントを紐付ける))
+              this.createPopup(e);
+            });
+            this.map.on("mouseenter", layer_id, () => {
+              // マーカーにマウスオーバーでポインタを人差し指にする
+              this.map.getCanvas().style.cursor = "pointer";
+            });
+            this.map.on("mouseleave", layer_id, () => {
+              // マーカーへのマウスフォーカスが外れたらポインタを通常に戻す
+              this.map.getCanvas().style.cursor = "";
+            });
+
             // - [ ] 左袖メニューのチェックボックスの選択状態と連動して、レイヤーの表示/非表示
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("[failed] load map error.....");
           console.log(e);
         });
-    }
-  }
+    },
+  },
 };
 </script>
