@@ -49,7 +49,7 @@ $ npm run serve
 * js
   * コーディングスタイルはVueCLIで生成される組み込みeslint+prettier(デフォルト設定)任せ
   * TS未導入
-  * Vuexなし、Vue Routerのみ有効化
+  * Vuex、Vue Routerのみ有効化
 * CSS
   * CSSプリプロセッサは使わず、tailwindcssだけでゴリゴリ書いてる
 
@@ -57,9 +57,11 @@ $ npm run serve
 
 - [ ] [community-geocoder](https://github.com/geolonia/community-geocoder)の組み込み
   - [ ] 住所を入力し、そこを中心として地図表示
-- [ ] 左袖メニューとの連携
-  - [ ] チェックボックスの状態でレイヤーの出し分け
-- [ ] マーカークリック時のPopup処理
+- [x] 左袖メニューとの連携
+  - [x] チェックボックスの状態でレイヤーの出し分け
+  - [ ] 全選択チェックボックス実装
+- [x] マーカークリック時のPopup処理
+  - [ ] ポップアップの中身のデザイン
 - [x] github pagesで公開
   - [x] https://terukizm.github.io/goto-eater/
 - [ ] VueCLIでscafoldされたサンプルファイル郡を消す
