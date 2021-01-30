@@ -86,13 +86,13 @@
                   :href="officialPage"
                   target="_blank"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-                  >{{ prefNameJa }}GoToEat公式サイト(外部リンク)</a
+                  >{{ prefNameJa }}GoToEat公式サイト<br>(外部リンク)</a
                 >
                 <a
                   :href="infoPage"
                   target="_blank"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-                  >{{ prefNameJa }}からのお知らせ(外部リンク)</a
+                  >{{ prefNameJa }}からのお知らせ<br>(外部リンク)</a
                 >
               </div>
             </div>
@@ -102,13 +102,6 @@
         <!-- main contains(WebMap) -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
           <div class="container">
-            <!-- FIXME: 横幅が確保できなくて崩れるので入れてる -->
-            <!-- <GeoloniaMap
-              :lat="36.304365"
-              :lng="139.5962079"
-              :pref-name-ja="'栃木県'"
-              :zoom="zoom"
-            /> -->
             <GeoloniaMap ref="webmap" />
           </div>
         </main>
@@ -122,14 +115,14 @@ import constant from "./constant";
 import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 
-/** 現在地を取得 */
+/** 現在地を取得(Promise) */
 const getCurrentPositionAsPromise = (options) => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
 
-/** community-geocoderのgetLatLngをPromiseで取得 */
+/** community-geocoderを使ってlatlngを取得(Promise) */
 const getLatLngAsPromise = (place) => {
   return new Promise((resolve, reject) => {
     /* eslint-disable */
@@ -153,18 +146,13 @@ export default {
       zoom: 15,
     };
   },
-  computed: {
-    prefs: function() {
-      return constant.PREFS;
-    }
-  },
   created: function() {
     const place = this.$route.query.place;
     this.zoom = this.$route.query.zoom;
 
     if (place) {
+      // ?place=で指定された場所を中心として地図表示
       this.place = place;
-      // ?placeで指定された場所を中心として地図表示
       // community-geocoderの外部jsをvue-plugin-load-scriptで読み込む
       this.$loadScript("https://cdn.geolonia.com/community-geocoder.js")
         .then(() => {
@@ -176,12 +164,14 @@ export default {
               this.draw(res.lat, res.lng, prefNameJa);
             })
             .catch((e) => {
-              // TODO: error表示
+              // TODO: alert表示
+              // https://tailwindcomponents.com/component/alerts-components
+              // https://tailwindcomponents.com/component/dismissible-alert
               alert(e);
             });
         })
         .catch((e) => {
-          console.log("Failed to fetch community geocoder js script...");
+          console.log("community-geocoderのjs読み込みに失敗しました。");
           console.log(e);
         });
     } else {
@@ -196,16 +186,14 @@ export default {
           `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
         );
         const json = await response.json();
-        const prefNameJa = json.result.prefecture.pname;
-        console.log(`current positon: ${prefNameJa} ${lat}, ${lng}`);
 
-        return [parseFloat(lat), parseFloat(lng), prefNameJa];
+        return [parseFloat(lat), parseFloat(lng), json.result.prefecture.pname];
       })()
         .then((res) => {
           this.draw(...res);
         })
         .catch((e) => {
-          console.log("[failed] get current position");
+          console.log("現在地取得からの逆ジオコーディングに失敗しました。");
           console.log(e);
         });
     }
@@ -220,10 +208,14 @@ export default {
       window.location.href = `./?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa) {
+      if (prefNameJa === "徳島県") {
+        alert("徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。");
+        return
+      }
       console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
       this.prefNameJa = prefNameJa;
-      this.officialPage = this.prefs[prefNameJa]['offical_page']
-      this.infoPage = this.prefs[prefNameJa]['info_page']
+      this.officialPage = constant.PREFS[prefNameJa]['offical_page']
+      this.infoPage = constant.PREFS[prefNameJa]['info_page']
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
     },
   },
