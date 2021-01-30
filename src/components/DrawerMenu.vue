@@ -10,7 +10,7 @@
       :class="
         sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
       "
-      class="fixed h-screen z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
+      class="fixed h-screen z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-800 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
     >
       <div class="flex items-center justify-center mx-2 my-4">
         <!-- LOGO -->
@@ -57,23 +57,17 @@
         <!-- その他適当なリンク -->
         <ul>
           <li>
-            <a href="#" target="_blank">
-              <span class="text-white text-sm">(注釈)</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://geolonia.com/" target="_blank">
-              <span class="text-white text-sm">Powerd by geolonia</span>
-            </a>
-          </li>
-          <li>
             <a
+              class="underline"
               href="https://github.com/terukizm/goto-eater-data/"
               target="_blank"
             >
-              <span class="text-white text-sm"
-                >GitHub Repository(goto-eater-data)</span
-              >
+              <span class="text-white text-sm">goto-eater-data</span>
+            </a>
+          </li>
+          <li>
+            <a class="underline" href="https://geolonia.com/" target="_blank">
+              <span class="text-white text-sm">geolonia</span>
             </a>
           </li>
         </ul>
@@ -90,7 +84,7 @@ export default {
 
   data: function() {
     return {
-      sidebarOpen: false
+      sidebarOpen: false,
     };
   },
 
@@ -104,8 +98,8 @@ export default {
       },
       set(value) {
         this.$store.dispatch("setLayers", value);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 </script>

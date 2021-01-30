@@ -2,3 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.underline {
+  text-decoration-color: #34fa0d;
+}
