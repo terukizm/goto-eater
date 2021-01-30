@@ -155,10 +155,25 @@ export default {
     const zoom = 15;
 
     if (place) {
-      this.place = place;
       // ?placeで指定された場所を中心として地図表示
-
-      // TODO:
+      // community-geocoderの外部jsをvue-plugin-load-scriptで読み込む
+      this.$loadScript("https://cdn.geolonia.com/community-geocoder.js")
+        .then(() => {
+          /* eslint-disable */
+          getLatLng(place, (res) => {
+            const lat = res.lat;
+            const lng = res.lng;
+            const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
+            this.place = res.addr;
+            console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
+            this.draw(lat, lng, prefNameJa, zoom);
+          })
+          /* eslint-enable */
+        })
+        .catch((e) => {
+          console.log("Failed to fetch community geocoder js script...");
+          console.log(e);
+        });
 
     } else {
       // 現在地からlatlngを取得、そこを中心として地図表示
@@ -180,7 +195,7 @@ export default {
       })()
         .then(res => {
           console.log("Sucesss loadByCurrentPosition...");
-          this.$refs.webmap.init(...res);
+          this.draw(...res);
         })
         .catch(e => {
           console.log("[failed] init map error.....");
@@ -196,6 +211,9 @@ export default {
       // あえて再描画ありのlocation.hrefで画面遷移
       // (GeoJSONの読み込みとかも都道府県単位で行うため)
       window.location.href = `./?place=${this.place}`;
+    },
+    draw(lat, lng, prefNameJa, zoom) {
+      this.$refs.webmap.init(lat, lng, prefNameJa, zoom)
     }
   }
 };
