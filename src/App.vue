@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- @see https://github.com/tailwindcomponents/dashboard -->
-    <div class="flex h-screen bg-gray-200">
+    <div class="flex w-screen h-screen bg-gray-200">
       <!-- 左袖メニュー (ハンバーガーメニュー) -->
       <DrawerMenu ref="menu" />
 
@@ -99,14 +99,8 @@
 
         <!-- main contains(WebMap) -->
         <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-          <div class="container mx-2">
+          <div class="container">
             <!-- FIXME: 横幅が確保できなくて崩れるので入れてる -->
-            <p id="title">
-              Built on top of modern-normalize, Preflight is a set of base
-              styles for Tailwind projects that are designed to smooth over
-              cross-browser inconsistencies and make it easier for you to work
-              within the constraints of your design system.
-            </p>
             <!-- <GeoloniaMap
               :lat="36.304365"
               :lng="139.5962079"

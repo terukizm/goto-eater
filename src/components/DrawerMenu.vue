@@ -12,12 +12,10 @@
       "
       class="fixed h-screen z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
     >
-      <div class="flex items-center justify-center my-4">
+      <div class="flex items-center justify-center mx-2 my-4">
         <!-- LOGO -->
-        <a href="https://github.com/terukizm/goto-eater">
-          <span class="text-white text-2xl font-semibold">後藤イー太(WIP)</span
-          ><span class="text-white text-sm">(GoToEatMap)</span>
-        </a>
+        <span class="text-white text-xl font-semibold">後藤イー太(β)</span>
+        <span class="text-white text-sm">(GoToEatMap)</span>
       </div>
 
       <nav class="mt-5">
