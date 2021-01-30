@@ -79,18 +79,20 @@
 
               <div
                 v-show="dropdownOpen"
-                class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10"
+                class="absolute right-0 mt-2 w-56 bg-white rounded-md overflow-hidden shadow-xl z-10"
                 style="display: none;"
               >
                 <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
-                  >GoToEat公式サイト</a
+                  :href="officialPage"
+                  target="_blank"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
+                  >{{ prefNameJa }}GoToEat公式サイト(外部リンク)</a
                 >
                 <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white"
-                  >都道府県からのお知らせ</a
+                  :href="infoPage"
+                  target="_blank"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
+                  >{{ prefNameJa }}からのお知らせ(外部リンク)</a
                 >
               </div>
             </div>
@@ -121,14 +123,14 @@ import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 
 /** 現在地を取得 */
-const getCurrentPositionAsPromise = options => {
+const getCurrentPositionAsPromise = (options) => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
 
 /** community-geocoderのgetLatLngをPromiseで取得 */
-const getLatLngAsPromise = place => {
+const getLatLngAsPromise = (place) => {
   return new Promise((resolve, reject) => {
     /* eslint-disable */
     getLatLng(place, resolve, reject);
@@ -139,19 +141,21 @@ const getLatLngAsPromise = place => {
 export default {
   components: {
     GeoloniaMap,
-    DrawerMenu
+    DrawerMenu,
   },
   data: function() {
     return {
       prefNameJa: null,
       dropdownOpen: false,
+      officialPage: "",
+      infoPage: "",
       place: "",
-      zoom: 15
+      zoom: 15,
     };
   },
   computed: {
-    genres: function() {
-      return constant.GENRES;
+    prefs: function() {
+      return constant.PREFS;
     }
   },
   created: function() {
@@ -167,16 +171,16 @@ export default {
           (async () => {
             return await getLatLngAsPromise(place);
           })()
-            .then(res => {
+            .then((res) => {
               const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
               this.draw(res.lat, res.lng, prefNameJa);
             })
-            .catch(e => {
+            .catch((e) => {
               // TODO: error表示
               alert(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("Failed to fetch community geocoder js script...");
           console.log(e);
         });
@@ -197,10 +201,10 @@ export default {
 
         return [parseFloat(lat), parseFloat(lng), prefNameJa];
       })()
-        .then(res => {
+        .then((res) => {
           this.draw(...res);
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("[failed] get current position");
           console.log(e);
         });
@@ -218,8 +222,10 @@ export default {
     draw(lat, lng, prefNameJa) {
       console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
       this.prefNameJa = prefNameJa;
+      this.officialPage = this.prefs[prefNameJa]['offical_page']
+      this.infoPage = this.prefs[prefNameJa]['info_page']
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
-    }
-  }
+    },
+  },
 };
 </script>

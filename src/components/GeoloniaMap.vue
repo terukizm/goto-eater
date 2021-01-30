@@ -98,10 +98,6 @@ export default {
     /** map描画 */
     init(lat, lng, prefNameJa, zoom = 15) {
       console.log("init geolonia Map.......");
-      // this.lat = lat;
-      // this.lng = lng;
-      // this.zoom = zoom;
-      // this.prefNameJa = prefNameJa;
       this.pref = constant.PREFS[prefNameJa].en;
 
       // geoloniaの外部jsが明示的にimportしたものではないため、
@@ -138,14 +134,12 @@ export default {
       (async () => {
         // mapの読み込み(map.on('load'))完了を待機
         await mapOnLoadAsPromise(this.map);
-
         // マーカー画像の読み込み(loadImage)完了を待機
         const images = await Promise.all(
           Object.values(constant.GENRES).map(value => {
             return loadImageAsPromise(this.map, value.icon);
           })
         );
-
         return images;
       })()
         .then(images => {
@@ -169,7 +163,6 @@ export default {
 
         // loadImageで読み込んだ画像を追加
         this.map.addImage(icon_image, images[key - 1]);
-
         // GeoJSONのURLをデータソースとして追加
         this.map.addSource(datasource_id, {
           type: "geojson",
@@ -186,7 +179,7 @@ export default {
             // マーカー画像(アイコン画像)の設定
             "icon-image": icon_image,
             "icon-allow-overlap": true,
-            "icon-size": 1,
+            "icon-size": window.matchMedia('(min-width: 600px)').matches ? 1 : 0.75, // スマホ用には3/4サイズに
             // アイコンの下にshop_nameをラベル表示させる設定
             "text-field": "{shop_name}",
             "text-font": ["Noto Sans Regular"],
