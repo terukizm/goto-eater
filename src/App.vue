@@ -127,16 +127,25 @@ import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 
 /** 現在地を取得 */
-const getCurrentPosition = options => {
+const getCurrentPosition = (options) => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+};
+
+/** community-geocoderのgetLatLngをPromiseで取得 */
+const getLatLngAsPromise = (place) => {
+  return new Promise((resolve, reject) => {
+    /* eslint-disable */
+    getLatLng(place, resolve, reject);
+    /* eslint-enable */
   });
 };
 
 export default {
   components: {
     GeoloniaMap,
-    DrawerMenu
+    DrawerMenu,
   },
   data: function() {
     return {
@@ -148,33 +157,36 @@ export default {
   computed: {
     genres: function() {
       return constant.GENRES;
-    }
+    },
   },
   created: function() {
     const place = this.$route.query.place;
     const zoom = 15;
+    this.place = place;
 
     if (place) {
       // ?placeで指定された場所を中心として地図表示
       // community-geocoderの外部jsをvue-plugin-load-scriptで読み込む
       this.$loadScript("https://cdn.geolonia.com/community-geocoder.js")
         .then(() => {
-          /* eslint-disable */
-          getLatLng(place, (res) => {
-            const lat = res.lat;
-            const lng = res.lng;
-            const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
-            this.place = res.addr;
-            console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
-            this.draw(lat, lng, prefNameJa, zoom);
-          })
-          /* eslint-enable */
+          (async () => {
+            return await getLatLngAsPromise(place);
+          })()
+            .then((res) => {
+              const lat = res.lat;
+              const lng = res.lng;
+              const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
+              this.draw(lat, lng, prefNameJa, zoom);
+            })
+            .catch((e) => {
+              // TODO: error表示
+              alert(e);
+            });
         })
         .catch((e) => {
           console.log("Failed to fetch community geocoder js script...");
           console.log(e);
         });
-
     } else {
       // 現在地からlatlngを取得、そこを中心として地図表示
       (async () => {
@@ -193,11 +205,11 @@ export default {
         this.prefNameJa = prefNameJa;
         return [parseFloat(lat), parseFloat(lng), prefNameJa, zoom];
       })()
-        .then(res => {
+        .then((res) => {
           console.log("Sucesss loadByCurrentPosition...");
           this.draw(...res);
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("[failed] init map error.....");
           console.log(e);
         });
@@ -213,8 +225,9 @@ export default {
       window.location.href = `./?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa, zoom) {
-      this.$refs.webmap.init(lat, lng, prefNameJa, zoom)
-    }
-  }
+      console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
+      this.$refs.webmap.init(lat, lng, prefNameJa, zoom);
+    },
+  },
 };
 </script>
