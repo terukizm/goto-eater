@@ -49,11 +49,14 @@
                   ></path>
                 </svg>
               </span>
-              <input
-                class="form-input w-56 rounded-md pl-10 pr-4 focus:border-indigo-600"
-                type="text"
-                placeholder="栃木県佐野市"
-              />
+              <form method="get" @submit.prevent="submit()">
+                <input
+                  class="form-input w-56 rounded-md pl-10 pr-4 focus:border-indigo-600"
+                  type="text"
+                  placeholder="栃木県佐野市"
+                  v-model="place"
+                />
+              </form>
             </div>
           </div>
 
@@ -138,7 +141,8 @@ export default {
   data: function() {
     return {
       prefNameJa: null,
-      dropdownOpen: false
+      dropdownOpen: false,
+      place: "",
     };
   },
   computed: {
@@ -147,35 +151,51 @@ export default {
     }
   },
   created: function() {
-    (async () => {
-      const position = await getCurrentPosition();
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      const zoom = 15;
+    const place = this.$route.query.place;
+    const zoom = 15;
 
-      // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
-      const response = await fetch(
-        `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
-      );
-      const json = await response.json();
-      const prefNameJa = json.result.prefecture.pname;
-      console.log(`current positon: ${prefNameJa} ${lat}, ${lng}`);
+    if (place) {
+      this.place = place;
+      // ?placeで指定された場所を中心として地図表示
 
-      this.prefNameJa = prefNameJa;
-      return [parseFloat(lat), parseFloat(lng), prefNameJa, zoom];
-    })()
-      .then(res => {
-        console.log("Sucesss loadByCurrentPosition...");
-        this.$refs.webmap.init(...res);
-      })
-      .catch(e => {
-        console.log("[failed] init map error.....");
-        console.log(e);
-      });
+      // TODO:
+
+    } else {
+      // 現在地からlatlngを取得、そこを中心として地図表示
+      (async () => {
+        const position = await getCurrentPosition();
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
+        const response = await fetch(
+          `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
+        );
+        const json = await response.json();
+        const prefNameJa = json.result.prefecture.pname;
+        console.log(`current positon: ${prefNameJa} ${lat}, ${lng}`);
+
+        this.prefNameJa = prefNameJa;
+        return [parseFloat(lat), parseFloat(lng), prefNameJa, zoom];
+      })()
+        .then(res => {
+          console.log("Sucesss loadByCurrentPosition...");
+          this.$refs.webmap.init(...res);
+        })
+        .catch(e => {
+          console.log("[failed] init map error.....");
+          console.log(e);
+        });
+    }
   },
   methods: {
     openMenu() {
       this.$refs.menu.sidebarOpen = true;
+    },
+    submit() {
+      // あえて再描画ありのlocation.hrefで画面遷移
+      // (GeoJSONの読み込みとかも都道府県単位で行うため)
+      window.location.href = `./?place=${this.place}`;
     }
   }
 };
