@@ -55,8 +55,8 @@ $ npm run serve
 
 ## TODO(Doing):
 
-- [ ] [community-geocoder](https://github.com/geolonia/community-geocoder)の組み込み
-  - [ ] 住所を入力し、そこを中心として地図表示
+- [x] [community-geocoder](https://github.com/geolonia/community-geocoder)の組み込み
+  - [x] 住所を入力し、そこを中心として地図表示
 - [x] 左袖メニューとの連携
   - [x] チェックボックスの状態でレイヤーの出し分け
   - [ ] 全選択チェックボックス実装
