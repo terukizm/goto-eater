@@ -11,25 +11,43 @@ import constant from "../constant";
  * ポップアップの中身(HTML)を作成
  * @param {*} props
  */
-const createPopupHTML = (props) => {
+const createPopupHTML = props => {
   return `
     <strong>店舗名:</strong> ${props.shop_name}<br>
     <strong>公式サイトの住所:</strong> ${props.address} <br>
-    ${ props.detail_page ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>` : "" }
-    ${ props.area_name ? `<strong>エリア</strong>: ${props.area_name} <br>` : "" }
+    ${
+      props.detail_page
+        ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>`
+        : ""
+    }
+    ${props.area_name ? `<strong>エリア</strong>: ${props.area_name} <br>` : ""}
     <strong>ジャンル:</strong> ${props.genre_name} <br>
-    ${ props.closing_day ? `<strong>定休日:</strong> ${props.closing_day} <br>` : "" }
-    ${ props.opening_hours ? `<strong>営業時間:</strong> ${props.opening_hours} <br>` : "" }
-    ${ props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : "" }
-    ${ props.offical_page ? `<a href="${props.offical_page}" target="_blank">【link to 公式HP】</a><br>` : "" }
-    <a href="${props["google_map_url"]}" target="_blank">【link to GoogleMap】</a><br>
-`
+    ${
+      props.closing_day
+        ? `<strong>定休日:</strong> ${props.closing_day} <br>`
+        : ""
+    }
+    ${
+      props.opening_hours
+        ? `<strong>営業時間:</strong> ${props.opening_hours} <br>`
+        : ""
+    }
+    ${props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : ""}
+    ${
+      props.offical_page
+        ? `<a href="${props.offical_page}" target="_blank">【link to 公式HP】</a><br>`
+        : ""
+    }
+    <a href="${
+      props["google_map_url"]
+    }" target="_blank">【link to GoogleMap】</a><br>
+`;
 };
 
 // MEMO: map.on('load')をPromise対応させたもの
 // @see https://github.com/mapbox/mapbox-gl-js/issues/10192
-const mapOnLoadAsPromise = (m) => {
-  return new Promise((resolve) => {
+const mapOnLoadAsPromise = m => {
+  return new Promise(resolve => {
     m.on("load", () => resolve());
   });
 };
@@ -54,7 +72,7 @@ export default {
       .then(() => {
         console.log("geolonia script is loaded !!");
       })
-      .catch((e) => {
+      .catch(e => {
         console.log("Failed to fetch geolonia js script...");
         console.log(e);
       });
@@ -72,8 +90,8 @@ export default {
     layers: {
       get() {
         return this.$store.getters.layers;
-      },
-    },
+      }
+    }
   },
 
   methods: {
@@ -123,19 +141,19 @@ export default {
 
         // マーカー画像の読み込み(loadImage)完了を待機
         const images = await Promise.all(
-          Object.values(constant.GENRES).map((value) => {
+          Object.values(constant.GENRES).map(value => {
             return loadImageAsPromise(this.map, value.icon);
           })
         );
 
         return images;
       })()
-        .then((images) => {
+        .then(images => {
           console.log("Sucesss wait on load !!");
           this.setupLayer(images);
           this.showLayer();
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("[failed] load map error.....");
           console.log(e);
         });
@@ -155,7 +173,7 @@ export default {
         // GeoJSONのURLをデータソースとして追加
         this.map.addSource(datasource_id, {
           type: "geojson",
-          data: `${constant.GEOJSON_BASE}/${this.pref}/genre${key}.geojson`,
+          data: `${constant.GEOJSON_BASE}/${this.pref}/genre${key}.geojson`
         });
 
         // レイヤー設定
@@ -174,18 +192,18 @@ export default {
             "text-font": ["Noto Sans Regular"],
             "text-radial-offset": 1.8,
             "text-size": 12,
-            "text-variable-anchor": ["top", "bottom", "left", "right"],
+            "text-variable-anchor": ["top", "bottom", "left", "right"]
           },
           paint: {
             // shop_nameを表示している、ラベルテキスト関係の設定
             "text-color": `${value.color_rgba}`, // ラベルテキストの文字色
             "text-halo-color": "rgba(255,255,255,1)", // 縁取りの色
-            "text-halo-width": 2,
-          },
+            "text-halo-width": 2
+          }
         });
 
         // @see https://docs.mapbox.com/jp/mapbox-gl-js/example/popup-on-click/
-        this.map.on("click", layer_id, (e) => {
+        this.map.on("click", layer_id, e => {
           // マーカークリックでポップアップ(吹き出し)表示
           const coordinates = e.lngLat;
           const feature = e.features[0];
@@ -219,7 +237,7 @@ export default {
         const visible = value ? "visible" : "none";
         this.map.setLayoutProperty(layer_id, "visibility", visible);
       });
-    },
-  },
+    }
+  }
 };
 </script>

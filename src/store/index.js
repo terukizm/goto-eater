@@ -13,13 +13,13 @@ const store = new Vuex.Store({
   mutations: {
     updateLayers(state, value) {
       state.layers = value;
-    },
+    }
   },
   actions: {
-    setLayers({commit}, value) {
-      commit("updateLayers", value)
+    setLayers({ commit }, value) {
+      commit("updateLayers", value);
     }
   }
-})
+});
 
-export default store
+export default store;

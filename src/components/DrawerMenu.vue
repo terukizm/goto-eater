@@ -100,7 +100,7 @@ export default {
     },
     layers: {
       get() {
-        return this.$store.getters.layers
+        return this.$store.getters.layers;
       },
       set(value) {
         this.$store.dispatch("setLayers", value);

@@ -121,14 +121,14 @@ import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 
 /** 現在地を取得 */
-const getCurrentPositionAsPromise = (options) => {
+const getCurrentPositionAsPromise = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
 
 /** community-geocoderのgetLatLngをPromiseで取得 */
-const getLatLngAsPromise = (place) => {
+const getLatLngAsPromise = place => {
   return new Promise((resolve, reject) => {
     /* eslint-disable */
     getLatLng(place, resolve, reject);
@@ -139,20 +139,20 @@ const getLatLngAsPromise = (place) => {
 export default {
   components: {
     GeoloniaMap,
-    DrawerMenu,
+    DrawerMenu
   },
   data: function() {
     return {
       prefNameJa: null,
       dropdownOpen: false,
       place: "",
-      zoom: 15,
+      zoom: 15
     };
   },
   computed: {
     genres: function() {
       return constant.GENRES;
-    },
+    }
   },
   created: function() {
     const place = this.$route.query.place;
@@ -167,16 +167,16 @@ export default {
           (async () => {
             return await getLatLngAsPromise(place);
           })()
-            .then((res) => {
+            .then(res => {
               const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
               this.draw(res.lat, res.lng, prefNameJa);
             })
-            .catch((e) => {
+            .catch(e => {
               // TODO: error表示
               alert(e);
             });
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("Failed to fetch community geocoder js script...");
           console.log(e);
         });
@@ -197,10 +197,10 @@ export default {
 
         return [parseFloat(lat), parseFloat(lng), prefNameJa];
       })()
-        .then((res) => {
+        .then(res => {
           this.draw(...res);
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("[failed] get current position");
           console.log(e);
         });
@@ -219,7 +219,7 @@ export default {
       console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
       this.prefNameJa = prefNameJa;
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
-    },
-  },
+    }
+  }
 };
 </script>
