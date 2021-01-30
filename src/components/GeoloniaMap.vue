@@ -7,6 +7,25 @@
 <script>
 import constant from "../constant";
 
+/**
+ * ポップアップの中身(HTML)を作成
+ * @param {*} props
+ */
+const createPopupHTML = (props) => {
+  return `
+    <strong>店舗名:</strong> ${props.shop_name}<br>
+    <strong>公式サイトの住所:</strong> ${props.address} <br>
+    ${ props.detail_page ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>` : "" }
+    ${ props.area_name ? `<strong>エリア</strong>: ${props.area_name} <br>` : "" }
+    <strong>ジャンル:</strong> ${props.genre_name} <br>
+    ${ props.closing_day ? `<strong>定休日:</strong> ${props.closing_day} <br>` : "" }
+    ${ props.opening_hours ? `<strong>営業時間:</strong> ${props.opening_hours} <br>` : "" }
+    ${ props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : "" }
+    ${ props.offical_page ? `<a href="${props.offical_page}" target="_blank">【link to 公式HP】</a><br>` : "" }
+    <a href="${props["google_map_url"]}" target="_blank">【link to GoogleMap】</a><br>
+`
+};
+
 // MEMO: map.on('load')をPromise対応させたもの
 // @see https://github.com/mapbox/mapbox-gl-js/issues/10192
 const mapOnLoadAsPromise = (m) => {
@@ -25,41 +44,8 @@ const loadImageAsPromise = (map, url) => {
   });
 };
 
-/**
- * ポップアップの中身(HTML)を作成
- * @param {*} feature
- */
-const createPopupHTML = (feature) => {
-  const props = feature.properties;
-
-  // TODO: component化、HTML組み立て
-  let popup_html = `<strong>店舗名:</strong> ${props.shop_name}<br>`;
-  popup_html += `<strong>公式サイトの住所:</strong> ${props.address} <br>`;
-  popup_html += props.detail_page
-    ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>`
-    : "";
-  popup_html += props.area_name
-    ? `<strong>エリア</strong>: ${props.area_name} <br>`
-    : "";
-  popup_html += `<strong>ジャンル:</strong> ${props.genre_name} <br>`;
-  popup_html += props.closing_day
-    ? `<strong>定休日:</strong> ${props.closing_day} <br>`
-    : "";
-  popup_html += props.opening_hours
-    ? `<strong>営業時間:</strong> ${props.opening_hours} <br>`
-    : "";
-  popup_html += props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : "";
-  popup_html += props.offical_page
-    ? `<a href="${props.offical_page}" target="_blank">[公式HP]</a><br>`
-    : "";
-  popup_html += `<a href="${props["google_map_url"]}" target="_blank">【link to GoogleMap】</a><br>`;
-
-  return popup_html;
-};
-
 export default {
   name: "GeoloniaMap",
-
   mounted: function() {
     // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
     this.$loadScript(
@@ -100,6 +86,9 @@ export default {
       // this.prefNameJa = prefNameJa;
       this.pref = constant.PREFS[prefNameJa].en;
 
+      // geoloniaの外部jsが明示的にimportしたものではないため、
+      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
+      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
       /* eslint-disable */
       this.map = new geolonia.Map({
         container: "#map",
@@ -129,10 +118,10 @@ export default {
 
       // その他の初期化
       (async () => {
-        // mapの読み込み完了を待機
+        // mapの読み込み(map.on('load'))完了を待機
         await mapOnLoadAsPromise(this.map);
 
-        // マーカー画像の読み込み完了を待機
+        // マーカー画像の読み込み(loadImage)完了を待機
         const images = await Promise.all(
           Object.values(constant.GENRES).map((value) => {
             return loadImageAsPromise(this.map, value.icon);
@@ -198,7 +187,17 @@ export default {
         // @see https://docs.mapbox.com/jp/mapbox-gl-js/example/popup-on-click/
         this.map.on("click", layer_id, (e) => {
           // マーカークリックでポップアップ(吹き出し)表示
-          this.createPopup(e);
+          const coordinates = e.lngLat;
+          const feature = e.features[0];
+          while (Math.abs(coordinates.lng - coordinates[0]) > 180) {
+            coordinates[0] += coordinates.lng > coordinates[0] ? 360 : -360;
+          }
+          /* eslint-disable */
+          new geolonia.Popup()
+            .setLngLat(coordinates)
+            .setHTML(createPopupHTML(feature.properties))
+            .addTo(this.map);
+          /* eslint-enable */
         });
         this.map.on("mouseenter", layer_id, () => {
           // マーカーにマウスオーバーでポインタを人差し指にする
@@ -209,24 +208,6 @@ export default {
           this.map.getCanvas().style.cursor = "";
         });
       }
-    },
-    /** マーカーをクリックした場合のポップアップ作成 */
-    createPopup(e) {
-      console.log(e);
-      const coordinates = e.lngLat;
-      const feature = e.features[0];
-      while (Math.abs(coordinates.lng - coordinates[0]) > 180) {
-        coordinates[0] += coordinates.lng > coordinates[0] ? 360 : -360;
-      }
-      // geoloniaの外部jsが明示的にimportしたものではないため、
-      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
-      // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
-      /* eslint-disable */
-      new geolonia.Popup()
-        .setLngLat(coordinates)
-        .setHTML(createPopupHTML(feature))
-        .addTo(this.map);
-      /* eslint-enable */
     },
     /** ジャンルの選択状態に応じてレイヤーを表示 */
     showLayer() {
