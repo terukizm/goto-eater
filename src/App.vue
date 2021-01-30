@@ -127,7 +127,7 @@ import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 
 /** 現在地を取得 */
-const getCurrentPosition = (options) => {
+const getCurrentPositionAsPromise = (options) => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
@@ -152,6 +152,7 @@ export default {
       prefNameJa: null,
       dropdownOpen: false,
       place: "",
+      zoom: 15,
     };
   },
   computed: {
@@ -161,10 +162,10 @@ export default {
   },
   created: function() {
     const place = this.$route.query.place;
-    const zoom = 15;
-    this.place = place;
+    this.zoom = this.$route.query.zoom;
 
     if (place) {
+      this.place = place;
       // ?placeで指定された場所を中心として地図表示
       // community-geocoderの外部jsをvue-plugin-load-scriptで読み込む
       this.$loadScript("https://cdn.geolonia.com/community-geocoder.js")
@@ -173,10 +174,8 @@ export default {
             return await getLatLngAsPromise(place);
           })()
             .then((res) => {
-              const lat = res.lat;
-              const lng = res.lng;
               const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
-              this.draw(lat, lng, prefNameJa, zoom);
+              this.draw(res.lat, res.lng, prefNameJa);
             })
             .catch((e) => {
               // TODO: error表示
@@ -190,7 +189,7 @@ export default {
     } else {
       // 現在地からlatlngを取得、そこを中心として地図表示
       (async () => {
-        const position = await getCurrentPosition();
+        const position = await getCurrentPositionAsPromise();
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
@@ -202,15 +201,13 @@ export default {
         const prefNameJa = json.result.prefecture.pname;
         console.log(`current positon: ${prefNameJa} ${lat}, ${lng}`);
 
-        this.prefNameJa = prefNameJa;
-        return [parseFloat(lat), parseFloat(lng), prefNameJa, zoom];
+        return [parseFloat(lat), parseFloat(lng), prefNameJa];
       })()
         .then((res) => {
-          console.log("Sucesss loadByCurrentPosition...");
           this.draw(...res);
         })
         .catch((e) => {
-          console.log("[failed] init map error.....");
+          console.log("[failed] get current position");
           console.log(e);
         });
     }
@@ -224,9 +221,10 @@ export default {
       // (GeoJSONの読み込みとかも都道府県単位で行うため)
       window.location.href = `./?place=${this.place}`;
     },
-    draw(lat, lng, prefNameJa, zoom) {
+    draw(lat, lng, prefNameJa) {
       console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
-      this.$refs.webmap.init(lat, lng, prefNameJa, zoom);
+      this.prefNameJa = prefNameJa;
+      this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
     },
   },
 };
