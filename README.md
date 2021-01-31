@@ -1,10 +1,7 @@
-(WIP) goto-eater
+goto-eater
 ===
 
-(WIP) GoToEat食事券が使える店舗を表示するやつ。
-
-![暫定](zantei.png)
-
+GoToEat食事券が使える店舗を表示するやつ。
 # 特徴
 
 * (ほぼ)全国対応
@@ -64,7 +61,7 @@ $ npm run serve
   - [ ] ポップアップの中身のデザイン
 - [x] github pagesで公開
   - [x] https://terukizm.github.io/goto-eater/
-- [ ] VueCLIでscafoldされたサンプルファイル郡を消す
+- [x] VueCLIでscafoldされたサンプルファイル郡を消す
 
 ## Project setup
 ```
