@@ -45,7 +45,7 @@
               checked
             />
             <img
-              class="ml-2"
+              class="ml-2 icon"
               :id="`image-${i}`"
               :src="genre.icon"
               :alt="genre.name"

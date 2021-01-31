@@ -170,7 +170,7 @@ export default {
             // マーカー画像(アイコン画像)の設定
             "icon-image": icon_image,
             "icon-allow-overlap": true,
-            "icon-size": 0.75,
+            "icon-size": 0.7,
             // アイコンの上下左右にshop_nameをラベル表示させる設定
             "text-field": "{shop_name}",
             "text-font": ["Noto Sans Regular"],

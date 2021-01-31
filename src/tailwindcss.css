@@ -6,3 +6,8 @@
 .underline {
   text-decoration-color: rgb(105, 98, 241);
 }
+
+img.icon {
+  width: 32px;
+  height: 32px;
+}
