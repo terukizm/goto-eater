@@ -37,14 +37,19 @@
           class="flex flex-col p-2"
         >
           <!-- ジャンル選択用のチェックボックス -->
-          <label class="inline-flex items-center h-12">
+          <label class="inline-flex items-center h-10">
             <input
               type="checkbox"
               :class="`form-checkbox h-6 w-6 ml-2 text-${genre.color}`"
               v-model="layers[i]"
               checked
             />
-            <img class="ml-2" :src="genre.icon" :alt="genre.name" />
+            <img
+              class="ml-2 icon"
+              :id="`image-${i}`"
+              :src="genre.icon"
+              :alt="genre.name"
+            />
             <!-- FIXME: 動的にtext-color(例: "text-yellow-300")を組み立てると、PurgeCSSでは該当クラスを利用しているのがわからずに
             Purgeされてしまう。とりあえずtailwind.config.jsで暫定対応。
             -->
@@ -53,7 +58,7 @@
         </div>
       </nav>
 
-      <div class="flex items-center mx-4 mt-12">
+      <div class="flex items-center mx-4 mt-8">
         <!-- その他適当なリンク -->
         <ul>
           <li>

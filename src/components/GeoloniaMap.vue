@@ -52,16 +52,6 @@ const mapOnLoadAsPromise = m => {
   });
 };
 
-// MEMO: map.loadImage()をPromise対応させたもの
-// @see https://qiita.com/amay077/items/e85249ffe898f3d48cef
-const loadImageAsPromise = (map, url) => {
-  return new Promise((resolve, reject) => {
-    map.loadImage(url, (error, image) => {
-      return image === null ? reject(error) : resolve(image);
-    });
-  });
-};
-
 export default {
   name: "GeoloniaMap",
   mounted: function() {
@@ -110,17 +100,12 @@ export default {
         await this.createMapObject();
         // mapの読み込み完了を待機(map.on('load'))
         await mapOnLoadAsPromise(this.map);
-        // マーカー画像の読み込み完了を待機(loadImage)
-        const images = await Promise.all(
-          Object.values(constant.GENRES).map(value => {
-            return loadImageAsPromise(this.map, value.icon);
-          })
-        );
-        return images;
+
+        return;
       })()
-        .then(images => {
+        .then(() => {
           // レイヤーの作成・表示
-          this.setupLayer(images);
+          this.setupLayer();
           this.showLayer();
         })
         .catch(e => {
@@ -160,15 +145,15 @@ export default {
       /* eslint-enable */
     },
     /** レイヤー作成 */
-    setupLayer(images) {
+    setupLayer() {
       for (const [key, value] of Object.entries(constant.GENRES)) {
         // ジャンル単位でマーカーを配置したレイヤーを追加
         // 1レイヤーに1マーカー(アイコン)画像、1データソースが紐づく
         const layer_id = `layer-${key}`;
         const icon_image = `image-${key}`;
         const datasource_id = `datasource-${key}`;
-        // loadImageで読み込んだ画像を追加
-        this.map.addImage(icon_image, images[key - 1]);
+        // 左袖メニューで表示されているマーカー画像を追加
+        this.map.addImage(icon_image, document.getElementById(icon_image));
         // GeoJSONのURLをデータソースとして追加
         this.map.addSource(datasource_id, {
           type: "geojson",
@@ -185,7 +170,7 @@ export default {
             // マーカー画像(アイコン画像)の設定
             "icon-image": icon_image,
             "icon-allow-overlap": true,
-            "icon-size": 0.75,
+            "icon-size": 0.7,
             // アイコンの上下左右にshop_nameをラベル表示させる設定
             "text-field": "{shop_name}",
             "text-font": ["Noto Sans Regular"],
