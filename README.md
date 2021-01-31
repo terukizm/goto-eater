@@ -2,6 +2,9 @@ goto-eater
 ===
 
 GoToEat食事券が使える店舗を表示するやつ。
+https://terukizm.github.io/goto-eater/
+
+![ogp](https://repository-images.githubusercontent.com/326689263/2ee89b00-63f7-11eb-98a4-c1a152f0e357)
 # 特徴
 
 * (ほぼ)全国対応
@@ -17,7 +20,7 @@ GoToEat食事券が使える店舗を表示するやつ。
   * PostCSS7
 * [geolonia](https://geolonia.com/)
   * (public beta)
-
+* [community-geocoder](https://github.com/geolonia/community-geocoder)
 # Quick Start
 
 ## 事前準備
@@ -41,7 +44,7 @@ $ npm run serve
 -> http://localhost:8080/
 ```
 
-# 開発メモ
+# 実装メモ
 
 * js
   * コーディングスタイルはVueCLIで生成される組み込みeslint+prettier(デフォルト設定)任せ
@@ -52,16 +55,11 @@ $ npm run serve
 
 ## TODO(Doing):
 
-- [x] [community-geocoder](https://github.com/geolonia/community-geocoder)の組み込み
-  - [x] 住所を入力し、そこを中心として地図表示
 - [x] 左袖メニューとの連携
   - [x] チェックボックスの状態でレイヤーの出し分け
   - [ ] 全選択チェックボックス実装
 - [x] マーカークリック時のPopup処理
   - [ ] ポップアップの中身のデザイン
-- [x] github pagesで公開
-  - [x] https://terukizm.github.io/goto-eater/
-- [x] VueCLIでscafoldされたサンプルファイル郡を消す
 
 ## Project setup
 ```
