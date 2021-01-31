@@ -84,7 +84,7 @@ export default {
 
   data: function() {
     return {
-      sidebarOpen: false,
+      sidebarOpen: false
     };
   },
 
@@ -98,8 +98,8 @@ export default {
       },
       set(value) {
         this.$store.dispatch("setLayers", value);
-      },
-    },
-  },
+      }
+    }
+  }
 };
 </script>

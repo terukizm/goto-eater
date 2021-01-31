@@ -1,6 +1,6 @@
 <template>
-  <div class="GeoloniaMap">
-    <div id="map" class="w-screen h-screen"></div>
+  <div class="GeoloniaMap w-full h-full">
+    <div id="map" class="w-full h-full"></div>
   </div>
 </template>
 
@@ -70,14 +70,14 @@ export default {
       `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
     )
       .then(() => {
-        console.log("geolonia script is loaded !!");
+        console.log("geolonia　embed.js is loaded.");
       })
       .catch(e => {
-        console.log("Failed to fetch geolonia js script...");
+        console.log("embed.jsの読み込みに失敗しました。");
         console.log(e);
       });
 
-    // vuexに格納されているレイヤーの選択状態を監視、変更があったらレイヤーの再レンダリング
+    // 左袖メニューのジャンル選択状態を監視、変更があったらレイヤーの再表示
     this.$store.watch(
       (_, getters) => getters.layers,
       () => {
@@ -97,17 +97,46 @@ export default {
   methods: {
     /** map描画 */
     init(lat, lng, prefNameJa, zoom = 15) {
-      console.log("init geolonia Map.......");
+      this.lat = lat;
+      this.lng = lng;
+      this.prefNameJa = prefNameJa;
       this.pref = constant.PREFS[prefNameJa].en;
+      this.zoom = zoom;
+      console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
+      console.log("init geolonia Map.......");
 
-      // geoloniaの外部jsが明示的にimportしたものではないため、
-      // eslintが geolonia.XXXX をerrorにしてくるので黙らせる
+      (async () => {
+        // mapの作成
+        await this.createMapObject();
+        // mapの読み込み完了を待機(map.on('load'))
+        await mapOnLoadAsPromise(this.map);
+        // マーカー画像の読み込み完了を待機(loadImage)
+        const images = await Promise.all(
+          Object.values(constant.GENRES).map(value => {
+            return loadImageAsPromise(this.map, value.icon);
+          })
+        );
+        return images;
+      })()
+        .then(images => {
+          // レイヤーの作成・表示
+          this.setupLayer(images);
+          this.showLayer();
+        })
+        .catch(e => {
+          console.log("地図の描画に失敗しました。");
+          console.log(e);
+        });
+    },
+    /** geolonia.Mapの作成 */
+    createMapObject() {
+      // geoloniaの外部jsが明示的にimportしたものではないため、eslintが geolonia.XXXX をerrorにしてくるので黙らせる
       // @see https://github.com/tserkov/vue-plugin-load-script/issues/21#issuecomment-723508237
       /* eslint-disable */
       this.map = new geolonia.Map({
         container: "#map",
-        center: [lng, lat],
-        zoom: zoom,
+        center: [this.lng, this.lat],
+        zoom: this.zoom,
       })
         .addControl(
           new geolonia.ScaleControl({
@@ -122,45 +151,22 @@ export default {
             },
             fitBoundsOptions: {
               linear: true,
-              zoom: zoom,
+              zoom: this.zoom,
             },
             trackUserLocation: false,
             showUserLocation: true,
           })
         );
       /* eslint-enable */
-
-      // その他の初期化
-      (async () => {
-        // mapの読み込み(map.on('load'))完了を待機
-        await mapOnLoadAsPromise(this.map);
-        // マーカー画像の読み込み(loadImage)完了を待機
-        const images = await Promise.all(
-          Object.values(constant.GENRES).map(value => {
-            return loadImageAsPromise(this.map, value.icon);
-          })
-        );
-        return images;
-      })()
-        .then(images => {
-          console.log("Sucesss wait on load !!");
-          this.setupLayer(images);
-          this.showLayer();
-        })
-        .catch(e => {
-          console.log("[failed] load map error.....");
-          console.log(e);
-        });
     },
     /** レイヤー作成 */
     setupLayer(images) {
       for (const [key, value] of Object.entries(constant.GENRES)) {
-        // ジャンルごとにマーカー(アイコン)を描画したレイヤーを追加
-        // 1レイヤーに1アイコン、1データソースが紐づく
+        // ジャンル単位でマーカーを配置したレイヤーを追加
+        // 1レイヤーに1マーカー(アイコン)画像、1データソースが紐づく
         const layer_id = `layer-${key}`;
         const icon_image = `image-${key}`;
         const datasource_id = `datasource-${key}`;
-
         // loadImageで読み込んだ画像を追加
         this.map.addImage(icon_image, images[key - 1]);
         // GeoJSONのURLをデータソースとして追加
@@ -169,7 +175,7 @@ export default {
           data: `${constant.GEOJSON_BASE}/${this.pref}/genre${key}.geojson`
         });
 
-        // レイヤー設定
+        // レイヤーの設定
         this.map.addLayer({
           id: layer_id,
           source: datasource_id,
@@ -179,8 +185,8 @@ export default {
             // マーカー画像(アイコン画像)の設定
             "icon-image": icon_image,
             "icon-allow-overlap": true,
-            "icon-size": window.matchMedia('(min-width: 600px)').matches ? 1 : 0.75, // スマホ用には3/4サイズに
-            // アイコンの下にshop_nameをラベル表示させる設定
+            "icon-size": 0.75,
+            // アイコンの上下左右にshop_nameをラベル表示させる設定
             "text-field": "{shop_name}",
             "text-font": ["Noto Sans Regular"],
             "text-radial-offset": 1.8,
@@ -189,12 +195,13 @@ export default {
           },
           paint: {
             // shop_nameを表示している、ラベルテキスト関係の設定
-            "text-color": `${value.color_rgba}`, // ラベルテキストの文字色
+            "text-color": `${value.color_rgba}`, // 文字色
             "text-halo-color": "rgba(255,255,255,1)", // 縁取りの色
             "text-halo-width": 2
           }
         });
 
+        // マーカーの設定
         // @see https://docs.mapbox.com/jp/mapbox-gl-js/example/popup-on-click/
         this.map.on("click", layer_id, e => {
           // マーカークリックでポップアップ(吹き出し)表示
@@ -220,7 +227,7 @@ export default {
         });
       }
     },
-    /** ジャンルの選択状態に応じてレイヤーを表示 */
+    /** 左袖メニューのジャンルの選択状態に応じてレイヤーを出し分け */
     showLayer() {
       this.layers.forEach((value, i) => {
         if (i === 0) {

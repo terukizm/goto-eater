@@ -4,5 +4,5 @@
 @tailwind utilities;
 
 .underline {
-  text-decoration-color: #34fa0d;
+  text-decoration-color: rgb(105, 98, 241);
 }
