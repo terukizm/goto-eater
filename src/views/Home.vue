@@ -88,7 +88,9 @@
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
                   >{{ prefNameJa }}GoToEat公式サイト<br />(外部リンク)</a
                 >
+
                 <a
+                  v-if="infoPage"
                   :href="infoPage"
                   target="_blank"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
@@ -204,7 +206,7 @@ export default {
     },
     submit() {
       // あえて再描画ありのlocation.hrefで画面遷移
-      // (都道府県が変わるとGeoJSONを読み込み直さないといけないので)
+      // (都道府県単位でGeoJSONが作成されており、都道府県が変わるとGeoJSONを読み込み直さないといけないので)
       window.location.href = `./?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa) {
