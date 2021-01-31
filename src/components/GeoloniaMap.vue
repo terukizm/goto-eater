@@ -1,6 +1,6 @@
 <template>
   <div class="GeoloniaMap w-full h-full">
-    <div id="map" class="w-full h-full"></div>
+    <div id="map" data-gesture-handling="off" class="w-full h-full"></div>
   </div>
 </template>
 
