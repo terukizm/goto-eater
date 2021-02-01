@@ -14,7 +14,7 @@ import constant from "../constant";
 const createPopupHTML = props => {
   return `
     <strong>店舗名:</strong> ${props.shop_name}<br>
-    <strong>公式サイトの住所:</strong> ${props.address} <br>
+    <strong>住所:</strong> ${props.address} <br>
     ${
       props.detail_page
         ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>`
@@ -40,7 +40,7 @@ const createPopupHTML = props => {
     }
     <a href="${
       props["google_map_url"]
-    }" target="_blank">【link to GoogleMap】</a><br>
+    }" class="underline" target="_blank">【GoogleMapで開く】</a><br>
 `;
 };
 
