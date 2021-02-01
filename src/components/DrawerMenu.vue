@@ -12,7 +12,7 @@
       "
       class="fixed h-screen z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-800 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0"
     >
-      <div class="flex items-center justify-center mx-2 my-4">
+      <div class="flex items-center justify-center mx-2 my-2">
         <!-- LOGO -->
         <span class="text-white text-xl font-semibold">後藤イー太(β)</span>
         <span class="text-white text-sm">(GoToEatMap)</span>
@@ -20,29 +20,28 @@
 
       <nav class="mt-5">
         <!-- 全選択/全選択解除 -->
-        <!-- <div class="mx-auto flex flex-col h-12 p-2">
+        <div class="mx-auto flex flex-col h-12 p-2">
           <label class="inline-flex items-center ml-2">
             <input
               type="checkbox"
               class="form-checkbox h-6 w-6 text-gray-500"
-              checked
+              v-model="checked_all"
             />
             <span class="text-gray-300 mx-3">全選択</span>
           </label>
-        </div> -->
+        </div>
 
+        <!-- ジャンル選択用のチェックボックス -->
         <div
           v-for="(genre, i) in genres"
           :key="genre.name"
           class="flex flex-col p-2"
         >
-          <!-- ジャンル選択用のチェックボックス -->
           <label class="inline-flex items-center h-10">
             <input
               type="checkbox"
               :class="`form-checkbox h-6 w-6 ml-2 text-${genre.color}`"
               v-model="layers[i]"
-              checked
             />
             <img
               class="ml-2 icon"
@@ -58,7 +57,7 @@
         </div>
       </nav>
 
-      <div class="flex items-center mx-4 mt-8">
+      <div class="flex items-center mx-4 mt-4">
         <!-- その他適当なリンク -->
         <ul>
           <li>
@@ -100,8 +99,17 @@ export default {
     layers: {
       get() {
         return this.$store.getters.layers;
+      }
+    },
+    checked_all: {
+      get() {
+        const selected = this.layers.filter(function(x) {
+          return x === true;
+        });
+        return selected.length === Object.keys(this.genres).length;
       },
-      set(value) {
+      set(checked) {
+        const value = [null].concat(Array(10).fill(checked)); // [null, true, true, ...]
         this.$store.dispatch("setLayers", value);
       }
     }

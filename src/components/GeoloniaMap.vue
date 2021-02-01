@@ -66,14 +66,6 @@ export default {
         console.log("embed.jsの読み込みに失敗しました。");
         console.log(e);
       });
-
-    // 左袖メニューのジャンル選択状態を監視、変更があったらレイヤーの再表示
-    this.$store.watch(
-      (_, getters) => getters.layers,
-      () => {
-        this.showLayer();
-      }
-    );
   },
 
   computed: {
@@ -81,6 +73,13 @@ export default {
       get() {
         return this.$store.getters.layers;
       }
+    }
+  },
+
+  watch: {
+    /** 左袖メニューのジャンル選択状態を監視、変更があったらレイヤーの再表示 */
+    layers() {
+      this.showLayer();
     }
   },
 
