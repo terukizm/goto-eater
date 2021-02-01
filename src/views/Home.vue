@@ -67,7 +67,7 @@
                 @click="dropdownOpen = !dropdownOpen"
                 class="relative block focus:outline-none leading-tight font-semibold text-gray-900"
               >
-                {{ prefNameJa || "[Unknown]" }}
+                {{ prefNameJa }}
               </button>
 
               <div

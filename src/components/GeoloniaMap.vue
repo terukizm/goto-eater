@@ -9,7 +9,6 @@ import constant from "../constant";
 
 /**
  * ポップアップの中身(HTML)を作成
- * @param {*} props
  */
 const createPopupHTML = props => {
   return `
@@ -60,7 +59,7 @@ export default {
       `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
     )
       .then(() => {
-        console.log("geolonia　embed.js is loaded.");
+        console.log("geolonia embed.js is loaded.");
       })
       .catch(e => {
         console.log("embed.jsの読み込みに失敗しました。");
@@ -99,8 +98,6 @@ export default {
         await this.createMapObject();
         // mapの読み込み完了を待機(map.on('load'))
         await mapOnLoadAsPromise(this.map);
-
-        return;
       })()
         .then(() => {
           // レイヤーの作成・表示
@@ -211,7 +208,7 @@ export default {
         });
       }
     },
-    /** 左袖メニューのジャンルの選択状態に応じてレイヤーを出し分け */
+    /** 左袖メニューのジャンル選択状態に応じてレイヤーを出し分け */
     showLayer() {
       this.layers.forEach((value, i) => {
         if (i === 0) {
