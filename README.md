@@ -21,6 +21,7 @@ https://terukizm.github.io/goto-eater/
 * [geolonia](https://geolonia.com/)
   * (public beta)
 * [community-geocoder](https://github.com/geolonia/community-geocoder)
+* [農研機構 簡易逆ジオコーディングサービス](https://aginfo.cgk.affrc.go.jp/rgeocode/index.html.ja)
 # Quick Start
 
 ## 事前準備
@@ -53,14 +54,6 @@ $ npm run serve
 * CSS
   * CSSプリプロセッサは使わず、tailwindcssだけでゴリゴリ書いてる
 
-## TODO(Doing):
-
-- [x] 左袖メニューとの連携
-  - [x] チェックボックスの状態でレイヤーの出し分け
-  - [ ] 全選択チェックボックス実装
-- [x] マーカークリック時のPopup処理
-  - [ ] ポップアップの中身のデザイン
-
 ## Project setup
 ```
 npm install
@@ -78,7 +71,7 @@ npm run build
 
 ### Lints and fixes files
 ```
-npm run lint
+npm run lint --fix
 ```
 
 ### Customize configuration
