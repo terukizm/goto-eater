@@ -62,7 +62,7 @@ export default {
         console.log("geolonia embed.js is loaded.");
       })
       .catch(e => {
-        console.log("embed.jsの読み込みに失敗しました。");
+        this.$alert("embed.jsの読み込みに失敗しました。");
         console.log(e);
       });
   },
@@ -105,7 +105,7 @@ export default {
           this.showLayer();
         })
         .catch(e => {
-          console.log("地図の描画に失敗しました。");
+          this.$alert("地図の描画に失敗しました。");
           console.log(e);
         });
     },

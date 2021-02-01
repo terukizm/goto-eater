@@ -164,16 +164,11 @@ export default {
               this.draw(res.lat, res.lng, prefNameJa);
             })
             .catch(e => {
-              // TODO: alert表示
-              // https://tailwindcomponents.com/component/alerts-components
-              // https://tailwindcomponents.com/component/dismissible-alert
-              alert(
-                `${e}\n(Tips:都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`
-              );
+              this.$alert(`${e} (都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`);
             });
         })
         .catch(e => {
-          console.log("community-geocoderのjs読み込みに失敗しました。");
+          this.$alert("community-geocoderのjs読み込みに失敗しました。");
           console.log(e);
         });
     } else {
@@ -195,7 +190,7 @@ export default {
           this.draw(...res);
         })
         .catch(e => {
-          console.log("現在地取得からの逆ジオコーディングに失敗しました。");
+          this.$alert("現在地取得からの逆ジオコーディングに失敗しました。");
           console.log(e);
         });
     }
@@ -211,9 +206,7 @@ export default {
     },
     draw(lat, lng, prefNameJa) {
       if (prefNameJa === "徳島県") {
-        alert(
-          "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。"
-        );
+        this.$alert("徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。");
         return;
       }
       this.prefNameJa = prefNameJa;

@@ -1,13 +1,14 @@
 import Vue from "vue";
 import App from "./App.vue";
-// import App from "./Sample.vue";
 import router from "./router";
 import store from "./store";
-
 import "./tailwindcss.css";
 
 import LoadScript from "vue-plugin-load-script";
 Vue.use(LoadScript);
+
+import VueSimpleAlert from "vue-simple-alert";
+Vue.use(VueSimpleAlert);
 
 Vue.config.productionTip = false;
 
