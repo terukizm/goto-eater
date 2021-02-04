@@ -103,6 +103,7 @@
 
         <!-- main contains(WebMap) -->
         <main class="flex-1 w-full h-full bg-gray-200">
+          <p v-show="loadingText">{{ loadingText }}</p>
           <GeoloniaMap ref="webmap" />
         </main>
       </div>
@@ -138,6 +139,7 @@ export default {
   },
   data: function() {
     return {
+      loadingText: "",
       prefNameJa: null,
       dropdownOpen: false,
       officialPage: "",
@@ -153,10 +155,13 @@ export default {
     if (place) {
       // ?place=で指定された場所を中心として地図表示
       this.place = place;
+      this.loadingText = `community-geocoderを読み込んでいます...`;
+
       // community-geocoderの外部jsをvue-plugin-load-scriptで読み込む
       this.$loadScript("https://cdn.geolonia.com/community-geocoder.js")
         .then(() => {
           (async () => {
+            this.loadingText = `${place}に対応する位置情報を取得しています...`;
             return await getLatLngAsPromise(place);
           })()
             .then(res => {
@@ -175,12 +180,14 @@ export default {
         });
     } else {
       // 現在地からlatlngを取得、そこを中心として地図表示
+      this.loadingText = `現在地を取得しています...`;
       (async () => {
         const position = await getCurrentPositionAsPromise();
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
         // 農研の逆ジオコーディングAPIを利用して、latlngから都道府県名を取得
+        this.loadingText = `現在地に対応する位置情報を取得しています...`;
         const response = await fetch(
           `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
         );
@@ -207,6 +214,7 @@ export default {
       window.location.href = `./?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa) {
+      this.loadingText = ""
       if (prefNameJa === "徳島県") {
         this.$alert(
           "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。"
