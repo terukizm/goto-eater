@@ -76,20 +76,60 @@
   </div>
 </template>
 
+<style>
+div.draw {
+  display: inline-block;
+  position: relative;
+}
+
+div.draw-success span {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 70%;
+  left: 90%;
+  width: 45%;
+  height: 95%;
+  margin: -30% 0 0 -40%;
+  border-radius: 50%;
+  border: solid 1.25em #132af7;
+}
+
+div.draw-failed span::before,
+div.draw-failed span::after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 70%;
+  left: 90%;
+  width: 50%;
+  height: 10%;
+  margin: -8% 0 0 -42%;
+  background: #f71313;
+  border-radius: 1.25em;
+}
+div.draw-failed span::before {
+  transform: rotate(-45deg);
+}
+div.draw-failed span::after {
+  transform: rotate(45deg);
+}
+</style>
+
 <script>
 import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 import DropDownMenu from "@/components/DropDownMenu.vue";
 
 /** 現在地を取得(Promise) */
-const getCurrentPositionAsPromise = options => {
+const getCurrentPositionAsPromise = (options) => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
 
 /** community-geocoder.getLatLng()を使ってlatlngを取得(Promise) */
-const getLatLngAsPromise = place => {
+const getLatLngAsPromise = (place) => {
   return new Promise((resolve, reject) => {
     /* eslint-disable */
     getLatLng(place, resolve, reject);
@@ -101,7 +141,7 @@ export default {
   components: {
     GeoloniaMap,
     DrawerMenu,
-    DropDownMenu
+    DropDownMenu,
   },
   data: function() {
     return {
@@ -109,7 +149,7 @@ export default {
       prefNameJa: null,
       officialPage: "",
       place: "",
-      zoom: 15
+      zoom: 15,
     };
   },
   created: function() {
@@ -128,17 +168,17 @@ export default {
             this.loadingText = `${place}に対応する位置情報を取得しています...`;
             return await getLatLngAsPromise(place);
           })()
-            .then(res => {
+            .then((res) => {
               const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
               this.draw(res.lat, res.lng, prefNameJa);
             })
-            .catch(e => {
+            .catch((e) => {
               this.$alert(
                 `${e} (都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`
               );
             });
         })
-        .catch(e => {
+        .catch((e) => {
           this.$alert("community-geocoderのjs読み込みに失敗しました。");
           console.log(e);
         });
@@ -160,10 +200,10 @@ export default {
 
         return [parseFloat(lat), parseFloat(lng), json.result.prefecture.pname];
       })()
-        .then(res => {
+        .then((res) => {
           this.draw(...res);
         })
-        .catch(e => {
+        .catch((e) => {
           this.$alert("現在地取得からの逆ジオコーディングに失敗しました。");
           console.log(e);
         });
@@ -180,16 +220,65 @@ export default {
     },
     draw(lat, lng, prefNameJa) {
       this.loadingText = "";
+      this.prefNameJa = prefNameJa;
       if (prefNameJa === "徳島県") {
         this.$alert(
-          "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。"
+          "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、現時点では対応を見送っています。"
         );
         return;
       }
-      this.prefNameJa = prefNameJa;
+      this.notice(prefNameJa);
+
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
       this.$refs.dropdown.init(prefNameJa);
-    }
-  }
+    },
+    notice(prefNameJa) {
+      if (this.$cookies.get(prefNameJa)) {
+        return;
+      }
+      const messages = {
+        静岡県: `
+          <div class="text-xm">
+            <p>本サービスは<a href="https://premium-gift.jp/fujinokunigotoeat/" class="underline text-xl" target="_blank">「ふじのくに静岡県Go To Eatキャンペーン(通称: 赤券)」</a>に対応しています。</p>
+            <div class="draw draw-success">
+              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shokujiken_shizuoka.jpg"/>
+              <span></span>
+            </div>
+            <br/>
+            <p>現時点では<a href="https://gotoeat-shizuoka.com/" class="underline text-xl" target="_blank">「静岡県商工会Go To Eatキャンペーン(通称: 青券)」</a>には対応していません。</p>
+            <div class="draw draw-failed">
+              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shizuoka.jpg"/>
+              <span></span>
+            </div>
+          </div>
+        `,
+        鹿児島県: `
+          <div class="text-xm">
+            <p>本サービスは<a href="http://www.kagoshima-cci.or.jp/?tag=gotoeat" class="underline text-xl" target="_blank">「鹿児島県商工会連合会版Go To Eatキャンペーン」</a>に対応しています。</p>
+            <div class="draw draw-success">
+              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima.jpg"/>
+              <span></span>
+            </div>
+            <br/>
+            <p>現時点では<a href="http://www.kagoshima-cci.or.jp/" class="underline text-xl" target="_blank">「鹿児島商工会議所版Go To Eatキャンペーン」</a>には対応していません。</p>
+            <div class="draw draw-failed">
+              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima_2.jpg"/>
+              <span></span>
+            </div>
+          </div>
+        `,
+      };
+      if (messages[prefNameJa]) {
+        this.$fire({
+          title: `${prefNameJa}のGoToEat商品券について`,
+          html: messages[prefNameJa],
+          width: "90%",
+        }).then(() => {
+          this.$cookies.config("1m"); // 1 month after, expire
+          this.$cookies.set(prefNameJa, "yes");
+        });
+      }
+    },
+  },
 };
 </script>
