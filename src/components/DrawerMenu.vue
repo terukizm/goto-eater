@@ -62,17 +62,18 @@
         <!-- その他適当なリンク -->
         <ul>
           <li>
+            GitHub:
             <a
               class="underline"
-              href="https://github.com/terukizm/goto-eater-data/"
+              href="https://github.com/terukizm/goto-eater/"
               target="_blank"
             >
-              <span class="text-white text-sm">goto-eater-data</span>
+              <span class="text-white text-sm">terukizm/goto-eater</span>
             </a>
           </li>
           <li>
             <a class="underline" href="https://geolonia.com/" target="_blank">
-              <span class="text-white text-sm">geolonia</span>
+              <span class="text-white text-sm">Powered by geolonia</span>
             </a>
           </li>
         </ul>
