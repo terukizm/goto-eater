@@ -240,11 +240,10 @@ export default {
         静岡県: `
           <div class="text-xm">
             <p>本サービスは<a href="https://premium-gift.jp/fujinokunigotoeat/" class="underline text-xl" target="_blank">「ふじのくに静岡県Go To Eatキャンペーン(通称: 赤券)」</a>に対応しています。</p>
-            <div class="draw draw-success">
+            <div class="draw draw-success mt-4">
               <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shokujiken_shizuoka.jpg"/>
               <span></span>
             </div>
-            <br/>
             <p>現時点では<a href="https://gotoeat-shizuoka.com/" class="underline text-xl" target="_blank">「静岡県商工会Go To Eatキャンペーン(通称: 青券)」</a>には対応していません。</p>
             <div class="draw draw-failed">
               <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shizuoka.jpg"/>
@@ -255,11 +254,10 @@ export default {
         鹿児島県: `
           <div class="text-xm">
             <p>本サービスは<a href="http://www.kagoshima-cci.or.jp/?tag=gotoeat" class="underline text-xl" target="_blank">「鹿児島県商工会連合会版Go To Eatキャンペーン」</a>に対応しています。</p>
-            <div class="draw draw-success">
+            <div class="draw draw-success mt-4">
               <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima.jpg"/>
               <span></span>
             </div>
-            <br/>
             <p>現時点では<a href="http://www.kagoshima-cci.or.jp/" class="underline text-xl" target="_blank">「鹿児島商工会議所版Go To Eatキャンペーン」</a>には対応していません。</p>
             <div class="draw draw-failed">
               <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima_2.jpg"/>

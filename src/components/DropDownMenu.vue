@@ -78,22 +78,12 @@ export default {
     /** 本サービスについて */
     about() {
       const html = `
-      <p>・各都道府県のGoToEat公式サイトが公開している店舗情報を元に、地図にマッピングしています。</p>
-      <p>・地図表示には<a href="https://geolonia.com/" class="underline text-xl" target="_blank"><strong>Geoloniaのホスティングサービス(β)</strong></a>を利用しています。</p>
-      <br/>
-      <p>・地図表示のために端末の位置情報を取得していますが、<strong>利用者個人を特定できるような情報は保持していません。</strong></p>
-      <p>・また、サービスのソースコードはすべて公開しています。</p>
-      <p>・それでも気になる場合、ブラウザから位置情報取得をOFFにして、住所入力からの検索機能だけでご利用ください。</p>
-      <br/>
-      <p>・店舗データは公式サイトから<strong>1日1回自動更新</strong>していますが、正しく追従できていない可能性があります。</p>
-      <p>・本サービスが提供している情報については、内容の即時性、および正当性を担保するものではありません。</p>
-      <br/>
-      <p>・<a href="https://newspat.csis.u-tokyo.ac.jp/geocode/modules/dams/index.php?content_id=1" class="underline">利用しているジオコーダ(DAMS)</a>の都合上、<strong>店舗のおおよその位置しか表示できません。</strong><br/>
-      <span class="text-sm">(<a href="https://nlftp.mlit.go.jp/cgi-bin/isj/dls/_choose_method.cgi" class="underline" target="_blank">国土交通省が提供している位置参照情報</a>を元にしているため、番地以降およびビル名に相当する解像度での位置情報が取得できません。)</span>
-      </p>
-      <p>・そのため、最終的なお店の位置については、必ず<strong>GoogleMapなどの他サービスと合わせて確認してください。</strong></p>
-      <br/>
-      <p class="text-xl"><strong>本サービスを用いたことにより発生した不具合に関して、開発者は一切の責任を負いません。</strong></p>
+      <p class="p-2">・各都道府県のGoToEat公式サイトが公開している情報を元に、地図にプロットしています。</p>
+      <p class="p-2">・端末の位置情報を取得する場合がありますが、<strong>利用者個人を特定できるような情報は保持しません。</strong></p>
+      <p class="p-2">・店舗データは<strong>1日1回自動更新</strong>していますが、<strong>内容の即時性、および正当性を担保するものではありません。</strong></p>
+      <p class="p-2">・<a href="https://newspat.csis.u-tokyo.ac.jp/geocode/modules/dams/index.php?content_id=1" class="underline">使用しているジオコーダ(DAMS)</a>が番地・マンション名レベルでの精度を持たないため、<strong>店舗のおおよその位置しか表示できません。</strong>また、<strong>ズレが発生する場合があります。</strong></p>
+      <p class="p-2">・お店の場所については、<strong>必ずGoogleMapなどの他サービスでもご確認ください。</strong></p>
+      <p class="p-2 mt-2 text-xl"><b>本サービスを用いたことにより発生した問題に関して、開発者は一切の責任を負いません。</b></p>
       `;
       this.$fire({
         title: "本サービスについて",
