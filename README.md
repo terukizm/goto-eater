@@ -20,8 +20,10 @@ https://terukizm.github.io/goto-eater/
   * PostCSS7
 * [geolonia](https://geolonia.com/)
   * (public beta)
-* [community-geocoder](https://github.com/geolonia/community-geocoder)
-* [農研機構 簡易逆ジオコーディングサービス](https://aginfo.cgk.affrc.go.jp/rgeocode/index.html.ja)
+* Web API
+  * [community-geocoder](https://github.com/geolonia/community-geocoder)
+  * [農研機構 簡易逆ジオコーディングサービス](https://aginfo.cgk.affrc.go.jp/rgeocode/index.html.ja)
+* [terukizm/goto\-eater\-data](https://github.com/terukizm/goto-eater-data)
 # Quick Start
 
 ## 事前準備
