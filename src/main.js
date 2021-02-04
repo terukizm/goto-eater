@@ -10,8 +10,8 @@ Vue.use(LoadScript);
 import VueSimpleAlert from "vue-simple-alert";
 Vue.use(VueSimpleAlert);
 
-import VueCookies from 'vue-cookies'
-Vue.use(VueCookies)
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 
 Vue.config.productionTip = false;
 

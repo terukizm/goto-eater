@@ -47,12 +47,6 @@
   </div>
 </template>
 
-<style scoped>
-strong {
-  background: linear-gradient(transparent 30%, rgb(187, 250, 255) 30%);
-}
-</style>
-
 <script>
 import constant from "@/constant";
 
@@ -69,7 +63,7 @@ export default {
   },
 
   mounted: function() {
-    if (!this.$cookies.get('TermsOfUse')) {
+    if (!this.$cookies.get("TermsOfUse")) {
       this.about();
     }
   },
@@ -105,10 +99,10 @@ export default {
         title: "本サービスについて",
         html: html,
         width: "90%"
+      }).then(() => {
+        this.$cookies.config("1m"); // 1 month after, expire
+        this.$cookies.set("TermsOfUse", "yes");
       });
-      const expires = 60 * 60 * 24 * 30; // 30 days
-      this.$cookies.config(expires, '');
-      this.$cookies.set('TermsOfUse', 1);
       this.dropdownOpen = false;
     }
   }

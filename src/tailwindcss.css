@@ -7,3 +7,6 @@
   text-decoration-color: rgb(105, 98, 241);
 }
 
+strong {
+  background: linear-gradient(transparent 30%, rgb(187, 250, 255) 30%);
+}

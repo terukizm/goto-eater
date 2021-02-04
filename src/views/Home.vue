@@ -122,14 +122,14 @@ import DrawerMenu from "@/components/DrawerMenu.vue";
 import DropDownMenu from "@/components/DropDownMenu.vue";
 
 /** 現在地を取得(Promise) */
-const getCurrentPositionAsPromise = (options) => {
+const getCurrentPositionAsPromise = options => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options);
   });
 };
 
 /** community-geocoder.getLatLng()を使ってlatlngを取得(Promise) */
-const getLatLngAsPromise = (place) => {
+const getLatLngAsPromise = place => {
   return new Promise((resolve, reject) => {
     /* eslint-disable */
     getLatLng(place, resolve, reject);
@@ -141,7 +141,7 @@ export default {
   components: {
     GeoloniaMap,
     DrawerMenu,
-    DropDownMenu,
+    DropDownMenu
   },
   data: function() {
     return {
@@ -149,7 +149,7 @@ export default {
       prefNameJa: null,
       officialPage: "",
       place: "",
-      zoom: 15,
+      zoom: 15
     };
   },
   created: function() {
@@ -168,17 +168,17 @@ export default {
             this.loadingText = `${place}に対応する位置情報を取得しています...`;
             return await getLatLngAsPromise(place);
           })()
-            .then((res) => {
+            .then(res => {
               const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
               this.draw(res.lat, res.lng, prefNameJa);
             })
-            .catch((e) => {
+            .catch(e => {
               this.$alert(
                 `${e} (都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`
               );
             });
         })
-        .catch((e) => {
+        .catch(e => {
           this.$alert("community-geocoderのjs読み込みに失敗しました。");
           console.log(e);
         });
@@ -200,10 +200,10 @@ export default {
 
         return [parseFloat(lat), parseFloat(lng), json.result.prefecture.pname];
       })()
-        .then((res) => {
+        .then(res => {
           this.draw(...res);
         })
-        .catch((e) => {
+        .catch(e => {
           this.$alert("現在地取得からの逆ジオコーディングに失敗しました。");
           console.log(e);
         });
@@ -266,19 +266,19 @@ export default {
               <span></span>
             </div>
           </div>
-        `,
+        `
       };
       if (messages[prefNameJa]) {
         this.$fire({
           title: `${prefNameJa}のGoToEat商品券について`,
           html: messages[prefNameJa],
-          width: "90%",
+          width: "90%"
         }).then(() => {
           this.$cookies.config("1m"); // 1 month after, expire
           this.$cookies.set(prefNameJa, "yes");
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
