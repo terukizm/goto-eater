@@ -68,6 +68,12 @@ export default {
     };
   },
 
+  mounted: function() {
+    if (!this.$cookies.get('TermsOfUse')) {
+      this.about();
+    }
+  },
+
   methods: {
     /** map描画 */
     init(prefNameJa) {
@@ -100,6 +106,9 @@ export default {
         html: html,
         width: "90%"
       });
+      const expires = 60 * 60 * 24 * 30; // 30 days
+      this.$cookies.config(expires, '');
+      this.$cookies.set('TermsOfUse', 1);
       this.dropdownOpen = false;
     }
   }
