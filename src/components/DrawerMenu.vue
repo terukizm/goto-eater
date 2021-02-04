@@ -61,19 +61,19 @@
       <div class="flex items-center mx-4 mt-4">
         <!-- その他適当なリンク -->
         <ul>
-          <li>
+          <li class="text-white text-sm mt-2">
             GitHub:
             <a
               class="underline"
               href="https://github.com/terukizm/goto-eater/"
               target="_blank"
             >
-              <span class="text-white text-sm">terukizm/goto-eater</span>
+              terukizm/goto-eater
             </a>
           </li>
-          <li>
+          <li class="text-white text-sm mt-2">
             <a class="underline" href="https://geolonia.com/" target="_blank">
-              <span class="text-white text-sm">Powered by geolonia</span>
+              Powered by geolonia
             </a>
           </li>
         </ul>

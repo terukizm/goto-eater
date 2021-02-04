@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 strong {
   background: linear-gradient(transparent 30%, rgb(187, 250, 255) 30%);
 }
