@@ -53,7 +53,6 @@
                 <input
                   class="form-input w-56 rounded-md pl-10 pr-4 focus:border-indigo-600"
                   type="text"
-                  placeholder="栃木県佐野市"
                   v-model="place"
                 />
               </form>
@@ -192,6 +191,7 @@ export default {
           `https://aginfo.cgk.affrc.go.jp/ws/rgeocode.php?json&lat=${lat}&lon=${lng}`
         );
         const json = await response.json();
+        this.place = `${json.result.prefecture.pname}${json.result.municipality.mname}`;
 
         return [parseFloat(lat), parseFloat(lng), json.result.prefecture.pname];
       })()
