@@ -80,6 +80,13 @@
   </div>
 </template>
 
+<style scoped>
+img.icon {
+  width: 32px;
+  height: 32px;
+}
+</style>
+
 <script>
 import constant from "../constant";
 

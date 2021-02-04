@@ -7,12 +7,3 @@
   text-decoration-color: rgb(105, 98, 241);
 }
 
-img.icon {
-  width: 32px;
-  height: 32px;
-}
-
-.mapboxgl-popup-content {
-  width: 300px;
-  background-color: rgb(245, 245, 245) !important;
-}
