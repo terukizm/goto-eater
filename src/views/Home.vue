@@ -49,6 +49,7 @@
                   ></path>
                 </svg>
               </span>
+
               <form method="get" @submit.prevent="submit()">
                 <input
                   class="form-input w-56 rounded-md pl-10 pr-4 focus:border-indigo-600"
@@ -61,42 +62,7 @@
 
           <!-- 都道府県名 -->
           <div class="flex items-center">
-            <div class="relative">
-              <button
-                @click="dropdownOpen = !dropdownOpen"
-                class="relative block focus:outline-none leading-tight font-semibold text-gray-900"
-              >
-                {{ prefNameJa }}
-              </button>
-
-              <div
-                v-show="dropdownOpen"
-                @click="dropdownOpen = false"
-                class="fixed inset-0 h-full w-full z-10"
-                style="display: none;"
-              ></div>
-
-              <div
-                v-show="dropdownOpen"
-                class="absolute right-0 mt-2 w-56 bg-white rounded-md overflow-hidden shadow-xl z-10"
-                style="display: none;"
-              >
-                <a
-                  :href="officialPage"
-                  target="_blank"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-                  >{{ prefNameJa }}GoToEat公式サイト<br />(外部リンク)</a
-                >
-
-                <a
-                  v-if="infoPage"
-                  :href="infoPage"
-                  target="_blank"
-                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-                  >{{ prefNameJa }}からのお知らせ<br />(外部リンク)</a
-                >
-              </div>
-            </div>
+            <DropDownMenu ref="dropdown" />
           </div>
         </header>
 
@@ -111,9 +77,9 @@
 </template>
 
 <script>
-import constant from "@/constant";
 import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
+import DropDownMenu from "@/components/DropDownMenu.vue";
 
 /** 現在地を取得(Promise) */
 const getCurrentPositionAsPromise = options => {
@@ -134,15 +100,14 @@ const getLatLngAsPromise = place => {
 export default {
   components: {
     GeoloniaMap,
-    DrawerMenu
+    DrawerMenu,
+    DropDownMenu
   },
   data: function() {
     return {
       loadingText: "",
       prefNameJa: null,
-      dropdownOpen: false,
       officialPage: "",
-      infoPage: "",
       place: "",
       zoom: 15
     };
@@ -214,7 +179,7 @@ export default {
       window.location.href = `./?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa) {
-      this.loadingText = ""
+      this.loadingText = "";
       if (prefNameJa === "徳島県") {
         this.$alert(
           "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。"
@@ -222,9 +187,8 @@ export default {
         return;
       }
       this.prefNameJa = prefNameJa;
-      this.officialPage = constant.PREFS[prefNameJa]["offical_page"];
-      this.infoPage = constant.PREFS[prefNameJa]["info_page"];
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
+      this.$refs.dropdown.init(prefNameJa);
     }
   }
 };
