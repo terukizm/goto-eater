@@ -1,4 +1,5 @@
 <template>
+  <!-- 左袖(ドロワー)メニュー -->
   <div class="DrawerMenu">
     <div
       :class="sidebarOpen ? 'block' : 'hidden'"
@@ -49,7 +50,7 @@
               :src="genre.icon"
               :alt="genre.name"
             />
-            <!-- FIXME: 動的にtext-color(例: "text-yellow-300")を組み立てると、PurgeCSSでは該当クラスを利用しているのがわからずに
+            <!-- FIXME: 動的にtext-color(例: "text-yellow-300")を組み立てると、PurgeCSSでは該当クラスを利用しているのがわからないので
             Purgeされてしまう。とりあえずtailwind.config.jsで暫定対応。
             -->
             <span :class="`text-${genre.color} mx-2`">{{ genre.name }}</span>
@@ -116,7 +117,8 @@ export default {
         return selected.length === Object.keys(this.genres).length;
       },
       set(checked) {
-        const value = [null].concat(Array(10).fill(checked)); // [null, true, true, ...]
+        // [null, ${checked}, ${checked}, ...] という配列を作成
+        const value = [null].concat(Array(10).fill(checked));
         this.$store.dispatch("setLayers", value);
       }
     }

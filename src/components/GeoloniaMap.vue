@@ -69,7 +69,7 @@ export default {
         console.log("geolonia embed.js is loaded.");
       })
       .catch(e => {
-        this.$alert("embed.jsの読み込みに失敗しました。");
+        this.$alert("geoloniaの外部js読み込みに失敗しました。");
         console.log(e);
       });
   },

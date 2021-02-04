@@ -164,7 +164,9 @@ export default {
               this.draw(res.lat, res.lng, prefNameJa);
             })
             .catch(e => {
-              this.$alert(`${e} (都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`);
+              this.$alert(
+                `${e} (都道府県名や市区町村名は省略せずに入力してください。また、駅名などのロケーション情報には対応していません。)`
+              );
             });
         })
         .catch(e => {
@@ -206,7 +208,9 @@ export default {
     },
     draw(lat, lng, prefNameJa) {
       if (prefNameJa === "徳島県") {
-        this.$alert("徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。");
+        this.$alert(
+          "徳島県のGoToEat公式サイトには「※本サイトのコンテンツの無断転載を禁じます。」という一文があるため、対応を見送っています。"
+        );
         return;
       }
       this.prefNameJa = prefNameJa;
