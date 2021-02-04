@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .mapboxgl-popup-content {
   width: 300px;
   background-color: rgb(245, 245, 245) !important;
