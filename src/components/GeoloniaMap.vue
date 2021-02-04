@@ -20,14 +20,12 @@ import constant from "../constant";
 const createPopupHTML = props => {
   return `
     <strong>店舗名:</strong> ${props.shop_name}<br>
-    <strong>住所:</strong> ${props.address} <br>
-    ${
-      props.detail_page
-        ? `<a href="${props.detail_page}" target="_blank">[GoTo詳細ページ]</a><br>`
-        : ""
-    }
-    ${props.area_name ? `<strong>エリア</strong>: ${props.area_name} <br>` : ""}
     <strong>ジャンル:</strong> ${props.genre_name} <br>
+    <strong>住所:</strong> ${props.address} <br>
+    ${props.area_name ? `<strong>エリア</strong>: ${props.area_name} <br>` : ""}
+    <a href="${
+      props["google_map_url"]
+    }" class="underline" target="_blank">【GoogleMapで開く】</a><br>
     ${
       props.closing_day
         ? `<strong>定休日:</strong> ${props.closing_day} <br>`
@@ -41,12 +39,14 @@ const createPopupHTML = props => {
     ${props.tel ? `<strong>電話番号:</strong> ${props.tel} <br>` : ""}
     ${
       props.offical_page
-        ? `<a href="${props.offical_page}" target="_blank">【link to 公式HP】</a><br>`
+        ? `<a href="${props.offical_page}" class="underline" target="_blank">【公式HPを開く】</a><br>`
         : ""
     }
-    <a href="${
-      props["google_map_url"]
-    }" class="underline" target="_blank">【GoogleMapで開く】</a><br>
+    ${
+      props.detail_page
+        ? `<a href="${props.detail_page}" class="underline" target="_blank">【GoToEatのページを開く】</a><br>`
+        : ""
+    }
 `;
 };
 
