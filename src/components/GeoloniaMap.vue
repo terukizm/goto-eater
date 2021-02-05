@@ -63,7 +63,7 @@ export default {
   mounted: function() {
     // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
     this.$loadScript(
-      `https://api.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
+      `https://cdn.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
     )
       .then(() => {
         console.log("geolonia embed.js is loaded.");
