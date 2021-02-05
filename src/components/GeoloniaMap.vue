@@ -60,19 +60,6 @@ const mapOnLoadAsPromise = m => {
 
 export default {
   name: "GeoloniaMap",
-  mounted: function() {
-    // geoloniaの外部jsをvue-plugin-load-scriptで読み込む
-    this.$loadScript(
-      `https://cdn.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
-    )
-      .then(() => {
-        console.log("geolonia embed.js is loaded.");
-      })
-      .catch(e => {
-        this.$alert("geoloniaの外部js読み込みに失敗しました。");
-        console.log(e);
-      });
-  },
 
   computed: {
     layers: {
@@ -100,19 +87,29 @@ export default {
       console.log(`lat: ${lat}, lng: ${lng}, prefNameJa: ${prefNameJa}`);
       console.log("init geolonia Map.......");
 
-      (async () => {
-        // mapの作成
-        await this.createMapObject();
-        // mapの読み込み完了を待機(map.on('load'))
-        await mapOnLoadAsPromise(this.map);
-      })()
+      this.$loadScript(
+        `https://cdn.geolonia.com/v1/embed?geolonia-api-key=${constant.GEOLONIA_API_KEY}`
+      )
         .then(() => {
-          // レイヤーの作成・表示
-          this.setupLayer();
-          this.showLayer();
+          console.log("geolonia embed.js is loaded.");
+          (async () => {
+            // mapの作成
+            await this.createMapObject();
+            // mapの読み込み完了を待機(map.on('load'))
+            await mapOnLoadAsPromise(this.map);
+          })()
+            .then(() => {
+              // レイヤーの作成・表示
+              this.setupLayer();
+              this.showLayer();
+            })
+            .catch(e => {
+              this.$alert("地図の描画に失敗しました。");
+              console.log(e);
+            });
         })
         .catch(e => {
-          this.$alert("地図の描画に失敗しました。");
+          this.$alert("geoloniaの外部js読み込みに失敗しました。");
           console.log(e);
         });
     },
