@@ -40,6 +40,10 @@ export default {
     },
     /** 商品券についてのお知らせ */
     info() {
+      if (this.prefNameJa !== "静岡県" && this.prefNameJa !== "鹿児島県") {
+        return;
+      }
+
       return new Promise(resolve => {
         const messages = {
           静岡県: `
@@ -71,6 +75,7 @@ export default {
             </div>
           `
         };
+
         this.$fire({
           title: `${this.prefNameJa}のGoToEat商品券について`,
           html: messages[this.prefNameJa],
