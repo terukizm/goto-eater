@@ -78,17 +78,19 @@ export default {
     /** 本サービスについて */
     about() {
       const html = `
-      <p class="p-2">・各都道府県のGoToEat公式サイトが公開している情報を元に、地図にプロットしています。</p>
-      <p class="p-2">・端末の位置情報を取得する場合がありますが、<strong>利用者個人を特定できるような情報は保持しません。</strong></p>
-      <p class="p-2">・店舗データは<strong>1日1回自動更新</strong>していますが、<strong>内容の即時性、および正当性を担保するものではありません。</strong></p>
+      <div class="text-sm">
+      <p class="p-2">・各都道府県のGoToEat公式サイトの情報を元に、地図にプロットしています。</p>
+      <p class="p-2">・現在地取得のために端末の位置情報を取得する場合がありますが、<strong>利用者個人を特定できるような情報は保持していません。</strong></p>
+      <p class="p-2">・店舗データは<strong>1日1回自動更新しています</strong>が、<strong>内容の即時性、および正当性を担保するものではありません。</strong></p>
       <p class="p-2">・<a href="https://newspat.csis.u-tokyo.ac.jp/geocode/modules/dams/index.php?content_id=1" class="underline">使用しているジオコーダ(DAMS)</a>が番地・マンション名レベルでの精度を持たないため、<strong>店舗のおおよその位置しか表示できません。</strong>また、<strong>ズレが発生する場合があります。</strong></p>
-      <p class="p-2">・お店の場所については、<strong>必ずGoogleMapなどの他サービスでもご確認ください。</strong></p>
-      <p class="p-2 mt-2 text-xl"><b>本サービスを用いたことにより発生した問題に関して、開発者は一切の責任を負いません。</b></p>
+      <p class="p-2">・お店の場所については、<strong>必ずGoogleMapなど、他サービスでもご確認ください。</strong></p>
+      <p class="p-2 mt-2"><b>本サービスを用いたことで発生した問題に関して、開発者は一切の責任を負いません。</b></p>
+      </div>
       `;
       this.$fire({
         title: "本サービスについて",
         html: html,
-        width: "90%"
+        width: "95%"
       }).then(() => {
         this.$cookies.config("1m"); // 1 month after, expire
         this.$cookies.set("TermsOfUse", "yes");
