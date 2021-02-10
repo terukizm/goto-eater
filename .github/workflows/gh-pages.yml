@@ -21,7 +21,8 @@ jobs:
 
       - name: Install and Builddependencies
         run: |
-          cat .env.production.example | sed -e 's/__REPLACE_HERE__/${{ secrets.GEOLONIA_API_KEY }}/g' > .env.production
+          cat .env.production.example | sed -e 's/__GEOLONIA_API_KEY_REPLACE_HERE__/${{ secrets.GEOLONIA_API_KEY }}/g' > .env.production
+          cat .env.production.example | sed -e 's/__GOOGLE_ANALYTICS_ID_REPLACE_HERE__/${{ secrets.GOOGLE_ANALYTICS_ID }}/g' > .env.production
           npm ci
           npm run build:prod
 

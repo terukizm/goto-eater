@@ -1,6 +1,16 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import VueAnalytics from "vue-analytics";
+
+if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
+  Vue.use(VueAnalytics, {
+    id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
+    router
+  });
+} else {
+  console.log("[Warn] VUE_APP_GOOGLE_ANALYTICS_ID is Empty.");
+}
 
 Vue.use(VueRouter);
 
