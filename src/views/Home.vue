@@ -2,6 +2,9 @@
   <div id="Home">
     <!-- @see https://github.com/tailwindcomponents/dashboard -->
     <div class="flex w-screen h-screen bg-gray-200">
+      <!-- 通知ダイアログ -->
+      <Dialog ref="dialog" />
+
       <!-- 左袖メニュー (ハンバーガーメニュー) -->
       <DrawerMenu ref="menu" />
 
@@ -120,6 +123,7 @@ div.draw-failed span::after {
 import GeoloniaMap from "@/components/GeoloniaMap.vue";
 import DrawerMenu from "@/components/DrawerMenu.vue";
 import DropDownMenu from "@/components/DropDownMenu.vue";
+import Dialog from "@/components/Dialog.vue";
 
 /** 現在地を取得(Promise) */
 const getCurrentPositionAsPromise = options => {
@@ -141,7 +145,8 @@ export default {
   components: {
     GeoloniaMap,
     DrawerMenu,
-    DropDownMenu
+    DropDownMenu,
+    Dialog
   },
   data: function() {
     return {
@@ -227,55 +232,9 @@ export default {
         );
         return;
       }
-      this.notice(prefNameJa);
-
       this.$refs.webmap.init(lat, lng, prefNameJa, this.zoom);
       this.$refs.dropdown.init(prefNameJa);
-    },
-    notice(prefNameJa) {
-      if (this.$cookies.get(prefNameJa)) {
-        return;
-      }
-      const messages = {
-        静岡県: `
-          <div class="text-xm">
-            <p>本サービスは<a href="https://premium-gift.jp/fujinokunigotoeat/" class="underline text-xl" target="_blank">「ふじのくに静岡県Go To Eatキャンペーン(通称: 赤券)」</a>に対応しています。</p>
-            <div class="draw draw-success mt-4">
-              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shokujiken_shizuoka.jpg"/>
-              <span></span>
-            </div>
-            <p>現時点では<a href="https://gotoeat-shizuoka.com/" class="underline text-xl" target="_blank">「静岡県商工会Go To Eatキャンペーン(通称: 青券)」</a>には対応していません。</p>
-            <div class="draw draw-failed">
-              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/shizuoka.jpg"/>
-              <span></span>
-            </div>
-          </div>
-        `,
-        鹿児島県: `
-          <div class="text-xm">
-            <p>本サービスは<a href="http://www.kagoshima-cci.or.jp/?tag=gotoeat" class="underline text-xl" target="_blank">「鹿児島県商工会連合会版Go To Eatキャンペーン」</a>に対応しています。</p>
-            <div class="draw draw-success mt-4">
-              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima.jpg"/>
-              <span></span>
-            </div>
-            <p>現時点では<a href="http://www.kagoshima-cci.or.jp/" class="underline text-xl" target="_blank">「鹿児島商工会議所版Go To Eatキャンペーン」</a>には対応していません。</p>
-            <div class="draw draw-failed">
-              <img class="p-2 mx-auto" src="https://gotoeat.maff.go.jp/images/kagoshima_2.jpg"/>
-              <span></span>
-            </div>
-          </div>
-        `
-      };
-      if (messages[prefNameJa]) {
-        this.$fire({
-          title: `${prefNameJa}のGoToEat商品券について`,
-          html: messages[prefNameJa],
-          width: "90%"
-        }).then(() => {
-          this.$cookies.config("1m"); // 1 month after, expire
-          this.$cookies.set(prefNameJa, "yes");
-        });
-      }
+      this.$refs.dialog.init(prefNameJa);
     }
   }
 };
