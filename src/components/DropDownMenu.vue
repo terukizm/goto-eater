@@ -13,13 +13,11 @@
         v-show="dropdownOpen"
         @click="dropdownOpen = false"
         class="fixed inset-0 h-full w-full z-10"
-        style="display: none;"
       ></div>
 
       <div
         v-show="dropdownOpen"
         class="absolute right-0 mt-2 w-56 bg-white rounded-md overflow-hidden shadow-xl z-10"
-        style="display: none;"
       >
         <a
           target="_blank"
@@ -33,14 +31,18 @@
           :href="infoPage"
           target="_blank"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-          >{{ prefNameJa }}からのお知らせ<span class="text-xs"><br/>(外部リンク)</span></a
+          >{{ prefNameJa }}からのお知らせ<span class="text-xs"
+            ><br />(外部リンク)</span
+          ></a
         >
         <hr />
         <a
           :href="officialPage"
           target="_blank"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-          >{{ prefNameJa }}GoToEat公式サイト<span class="text-xs"><br/>(外部リンク)</span></a
+          >{{ prefNameJa }}GoToEat公式サイト<span class="text-xs"
+            ><br />(外部リンク)</span
+          ></a
         >
       </div>
     </div>
