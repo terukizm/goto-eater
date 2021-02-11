@@ -15,12 +15,6 @@ Vue.use(VueSimpleAlert);
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
 
-import mdiVue from "mdi-vue";
-import * as mdijs from "@mdi/js";
-Vue.use(mdiVue, {
-  icons: mdijs
-});
-
 new Vue({
   router,
   store,
