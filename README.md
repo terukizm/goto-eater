@@ -8,7 +8,7 @@ https://terukizm.github.io/goto-eater/
 # 特徴
 
 * (ほぼ)全国対応
-  * [データ元](https://github.com/terukizm/goto-eater-data)
+  * [terukizm/goto\-eater\-data](https://github.com/terukizm/goto-eater-data)
 * ジャンル別の表示
 * WebGLによるスムーズな地図表示(Mapbox GL JS互換)
 
@@ -23,7 +23,6 @@ https://terukizm.github.io/goto-eater/
 * Web API
   * [community-geocoder](https://github.com/geolonia/community-geocoder)
   * [農研機構 簡易逆ジオコーディングサービス](https://aginfo.cgk.affrc.go.jp/rgeocode/index.html.ja)
-* [terukizm/goto\-eater\-data](https://github.com/terukizm/goto-eater-data)
 # Quick Start
 
 ## 事前準備
