@@ -221,7 +221,7 @@ export default {
     submit() {
       // あえて再描画ありのlocation.hrefで画面遷移
       // (都道府県単位でGeoJSONが作成されており、都道府県が変わるとGeoJSONを読み込み直さないといけないので)
-      window.location.href = `./?place=${this.place}`;
+      window.location.href = `${process.env.BASE_URL}?place=${this.place}`;
     },
     draw(lat, lng, prefNameJa) {
       this.loadingText = "";
