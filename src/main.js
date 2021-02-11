@@ -4,6 +4,8 @@ import router from "./router";
 import store from "./store";
 import "./tailwindcss.css";
 
+Vue.config.productionTip = false;
+
 import LoadScript from "vue-plugin-load-script";
 Vue.use(LoadScript);
 
@@ -13,7 +15,11 @@ Vue.use(VueSimpleAlert);
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
 
-Vue.config.productionTip = false;
+import mdiVue from "mdi-vue";
+import * as mdijs from "@mdi/js";
+Vue.use(mdiVue, {
+  icons: mdijs
+});
 
 new Vue({
   router,
