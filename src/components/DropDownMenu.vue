@@ -22,17 +22,10 @@
         style="display: none;"
       >
         <a
-          @click.prevent.stop="about()"
-          href="#"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-          >本サービスについて</a
-        >
-        <hr />
-        <a
-          :href="officialPage"
           target="_blank"
+          href="https://github.com/terukizm/goto-eater-data#%E6%B3%A8%E6%84%8F%E5%85%8D%E8%B2%AC"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-          >{{ prefNameJa }}GoToEat公式サイト<br />(外部リンク)</a
+          >注意・免責</a
         >
         <hr />
         <a
@@ -40,7 +33,14 @@
           :href="infoPage"
           target="_blank"
           class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
-          >{{ prefNameJa }}からのお知らせ<br />(外部リンク)</a
+          >{{ prefNameJa }}からのお知らせ<span class="text-xs"><br/>(外部リンク)</span></a
+        >
+        <hr />
+        <a
+          :href="officialPage"
+          target="_blank"
+          class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white text-right"
+          >{{ prefNameJa }}GoToEat公式サイト<span class="text-xs"><br/>(外部リンク)</span></a
         >
       </div>
     </div>
