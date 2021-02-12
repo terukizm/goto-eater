@@ -36,7 +36,10 @@ $ git clone git@github.com:terukizm/goto-eater.git
 $ cd goto-eater/
 
 $ cp .env.local.example .env.local
-(Geoloniaはlocalhost, github.ioからであれば`YOUR_API_KEY`文字列を指定すると制限なく試用可能とのこと)
+
+// GeoloniaのAPI_KEYはlocalhost, github.ioからであれば`YOUR_API_KEY`文字列を指定すれば制限なく試用可能とのこと。
+// 他のサーバ等に配置する場合は [geolonia API_KEY](https://app.geolonia.com/?lang=ja#/signup)からAPI_KEYを払い出す。
+$ vi .env.local
 ---
 VUE_APP_GEOLONIA_API_KEY=YOUR_API_KEY
 ---
