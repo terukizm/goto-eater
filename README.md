@@ -29,16 +29,14 @@ https://terukizm.github.io/goto-eater/
 
 * install npm
 * [geolonia API_KEY](https://app.geolonia.com/?lang=ja#/signup)の払い出し
-  * http://localhost:8080/ など、開発用のURLを指定しておく
+  * GeoloniaのAPI_KEYは`localhost`, `github.io`からであれば`YOUR_API_KEY`文字列を指定すれば制限なく試用可能(2021/02時点)
+  * 他のサーバに配置する場合はAPI_KEYを払い出しておく
 
 ```
 $ git clone git@github.com:terukizm/goto-eater.git
 $ cd goto-eater/
 
 $ cp .env.local.example .env.local
-
-// GeoloniaのAPI_KEYはlocalhost, github.ioからであれば`YOUR_API_KEY`文字列を指定すれば制限なく試用可能とのこと。
-// 他のサーバ等に配置する場合は [geolonia API_KEY](https://app.geolonia.com/?lang=ja#/signup)からAPI_KEYを払い出す。
 $ vi .env.local
 ---
 VUE_APP_GEOLONIA_API_KEY=YOUR_API_KEY
