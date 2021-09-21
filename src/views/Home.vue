@@ -174,8 +174,14 @@ export default {
             return await getLatLngAsPromise(place);
           })()
             .then(res => {
-              const prefNameJa = res.addr.match(/^(.{2,3}[都道府県]).*$/)[1];
-              this.draw(res.lat, res.lng, prefNameJa);
+              const prefNameJa = res.pref.match(/^(.{2,3}[都道府県]).*$/)[1];
+              if (res.lat == null || res.lng == null) {
+                this.$alert(
+                  "2021/09/21: 暫定: community-geocoderが都道府県+市区町村名のみで値を返さない不具合があるので、町丁目以下も入力してください。 - \n @see https://github.com/geolonia/community-geocoder/issues/124"
+                );
+              } else {
+                this.draw(res.lat, res.lng, prefNameJa);
+              }
             })
             .catch(e => {
               this.$alert(
