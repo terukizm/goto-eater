@@ -89,14 +89,14 @@ export default {
     },
     init(prefNameJa) {
       this.prefNameJa = prefNameJa;
-      (async () => {
-        if (!this.$cookies.get("TermsOfUse")) {
-          await this.term();
-        }
-        if (!this.$cookies.get(this.prefNameJa)) {
-          await this.info();
-        }
-      })();
+      // (async () => {
+      //   if (!this.$cookies.get("TermsOfUse")) {
+      //     await this.term();
+      //   }
+      //   if (!this.$cookies.get(this.prefNameJa)) {
+      //     await this.info();
+      //   }
+      // })();
     }
   }
 };
